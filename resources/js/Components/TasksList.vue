@@ -1,5 +1,9 @@
 <script setup>
 import CustomView from "@/Components/CustomView.vue";
+import ActivitiesList from "@/Components/ActivitiesList.vue";
+import { defineProps, onMounted } from "vue";
+import dayjs from "dayjs";
+import _ from "lodash";
 
 const props = defineProps({
     tasks: {
@@ -7,38 +11,62 @@ const props = defineProps({
         required: true,
     },
 });
+onMounted(() => {
+    console.log(props.tasks);
+});
 </script>
 
 <template>
     <tr v-for="task in tasks" :key="task.id">
         <td>
-            <CustomView _label="Task Name" :_value="task.name" />
+            {{ task.name }}
         </td>
         <td>
-            <CustomView _label="Unit" :_value="task.unit" />
+            {{ task.unit }}
         </td>
         <td>
-            <CustomView
-                _label="Quantity"
-                :_value="task.quantity"
-                _type="number"
-            />
+            {{ task.quantity }}
         </td>
         <td>
-            <CustomView
-                _label="Price"
-                :_value="Intl.NumberFormat('en-US').format(task.price)"
-            />
+            {{ Intl.NumberFormat("en-US").format(task.price) }}
         </td>
         <td>
-            <CustomView
-                _label="Total Task Value"
-                :_value="
-                    Intl.NumberFormat('en-US').format(
-                        task.price * task.quantity
-                    )
-                "
-            />
+            {{ Intl.NumberFormat("en-US").format(task.price * task.quantity) }}
+        </td>
+        <ActivitiesList :task="task" />
+        <td>
+            {{
+                _.sumBy(task.activities, (activity) =>
+                    dayjs(activity.date) < dayjs().startOf("month")
+                        ? activity.value
+                        : 0
+                )
+            }}
+        </td>
+        <td>
+            {{ _.sumBy(task.activities, (activity) => activity.value) }}
+        </td>
+        <td>
+            {{
+                Intl.NumberFormat("en-US").format(
+                    _.sumBy(task.activities, (activity) =>
+                        dayjs(activity.date) < dayjs().startOf("month")
+                            ? activity.value
+                            : 0
+                    ) * task.price
+                )
+            }}
+        </td>
+        <td>
+            {{
+                _.sumBy(task.activities, (activity) =>
+                    dayjs(activity.date) < dayjs().startOf("month")
+                        ? activity.value
+                        : 0
+                ) >= task.quantity
+                    ? "Task Done"
+                    : "WIP"
+            }}
         </td>
     </tr>
 </template>

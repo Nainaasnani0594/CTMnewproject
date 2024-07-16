@@ -2,12 +2,15 @@
 
 namespace App\Models;
 
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class Project extends Model
 {
     use HasFactory;
+
+    public $appends = ['months'];
 
     protected $fillable = [
         'sponsor_name',
@@ -30,6 +33,19 @@ class Project extends Model
         'sponsor_country',
         'created_by',
     ];
+
+    public function getMonthsAttribute()
+    {
+        $start_date = Carbon::parse($this->activity_start_date);
+        $duration = ceil($this->study_duration);
+
+        $months = [];
+        for ($i = 0; $i < $duration; $i++) {
+            $months[] = $start_date->copy()->addMonths($i)->startOfMonth();
+        }
+
+        return $months;
+    }
 
     public function createdBy()
     {

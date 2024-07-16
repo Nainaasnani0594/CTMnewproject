@@ -1,6 +1,7 @@
 <script setup>
 import GroupItem from "./GroupItem.vue";
 import AddGroupForm from "./AddGroupForm.vue";
+import dayjs from "dayjs";
 
 const props = defineProps({
     project: {
@@ -13,13 +14,33 @@ const props = defineProps({
 <template>
     <div class="overflow-x-auto">
         <table class="table">
-            <thead>
+            <thead class="text-center">
+                <tr>
+                    <th>Deliverables &amp; Tasks</th>
+                    <th>UNIT</th>
+                    <th>No. of Units</th>
+                    <th>Unit Price</th>
+                    <th>Total Task Value</th>
+                    <th class="p-0" v-for="month in project.months" :key="month">
+                        {{ dayjs(month).format("MMM-YY") }}
+                    </th>
+                    <th>Units Done</th>
+                    <th>Units incl Forecast</th>
+                    <th>Amount Done</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+            <tbody class="text-center">
                 <tr>
                     <th></th>
                     <th></th>
+                    <th></th>
+                    <th></th>
+                    <th></th>
+                    <td class="px-0.5 text-xs" v-for="month in project.months" :key="month">
+                        {{ dayjs(month) > dayjs().startOf('month') ? "Forecast" : "Actual" }}
+                    </td>
                 </tr>
-            </thead>
-            <tbody>
                 <GroupItem
                     v-for="group in project.groups"
                     :key="group.id"
