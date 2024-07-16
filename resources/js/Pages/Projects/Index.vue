@@ -1,6 +1,6 @@
 <script setup>
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout.vue";
-import { Head } from "@inertiajs/vue3";
+import { Head, Link } from "@inertiajs/vue3";
 
 defineProps({
     projects: {
@@ -9,33 +9,8 @@ defineProps({
     },
 });
 
-const to_roman_numerical = (number) => {
-    const roman_numerals = {
-        M: 1000,
-        CM: 900,
-        D: 500,
-        CD: 400,
-        C: 100,
-        XC: 90,
-        L: 50,
-        XL: 40,
-        X: 10,
-        IX: 9,
-        V: 5,
-        IV: 4,
-        I: 1,
-    };
+import { to_roman_numerical } from "@/util";
 
-    let result = "";
-
-    for (const key in roman_numerals) {
-        const value = roman_numerals[key];
-        result += key.repeat(Math.floor(number / value));
-        number %= value;
-    }
-
-    return result;
-};
 </script>
 
 <template>
@@ -92,16 +67,20 @@ const to_roman_numerical = (number) => {
                                                 )
                                             }}
                                         </td>
-                                        <td>
-                                            <a
-                                                href="#"
+                                        <td class="flex gap-2">
+                                            <Link
+                                                :href="
+                                                    route(
+                                                        'projects.show',
+                                                        project.id
+                                                    )
+                                                "
                                                 class="btn btn-sm btn-primary"
-                                                >Edit</a
+                                                >View</Link
                                             >
-                                            <a
-                                                href="#"
-                                                class="ml-2 btn btn-sm btn-error"
-                                                >Delete</a
+                                            <Link
+                                                class="btn btn-sm btn-error"
+                                                >Delete</Link
                                             >
                                         </td>
                                     </tr>

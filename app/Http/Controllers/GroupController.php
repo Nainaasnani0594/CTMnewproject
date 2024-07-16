@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Group;
 use App\Http\Requests\StoreGroupRequest;
 use App\Http\Requests\UpdateGroupRequest;
+use Inertia\Inertia;
 
 class GroupController extends Controller
 {
@@ -29,7 +30,9 @@ class GroupController extends Controller
      */
     public function store(StoreGroupRequest $request)
     {
-        //
+        $group = Group::create($request->validated());
+
+        return redirect()->route('projects.show', $group->project_id);
     }
 
     /**

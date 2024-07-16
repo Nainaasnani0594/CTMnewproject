@@ -14,6 +14,9 @@ class Task extends Model
     protected $fillable = [
         'name',
         'group_id',
+        'unit',
+        'quantity',
+        'price',
     ];
 
     public function group()
