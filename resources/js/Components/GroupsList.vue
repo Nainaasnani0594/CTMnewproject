@@ -46,11 +46,6 @@ const props = defineProps({
                     :key="group.id"
                     :group="group"
                 />
-                <tr>
-                    <th colspan="100%">
-                        <AddGroupForm :project-id="project.id" />
-                    </th>
-                </tr>
             </tbody>
         </table>
     </div>

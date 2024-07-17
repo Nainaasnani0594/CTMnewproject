@@ -14,6 +14,17 @@ const props = defineProps({
 onMounted(() => {
     console.log(props.tasks);
 });
+const on_activity_updated = (updated_activity) => {
+    // update the value of activity using updated_activity in props.tasks
+    const task_index = props.tasks.findIndex(
+        (task) => task.id === updated_activity.task_id
+    );
+    const activity_index = props.tasks[task_index].activities.findIndex(
+        (activity) => activity.id === updated_activity.id
+    );
+    props.tasks[task_index].activities[activity_index].value =
+        Number(updated_activity.value);
+};
 </script>
 
 <template>
@@ -33,7 +44,7 @@ onMounted(() => {
         <td>
             {{ Intl.NumberFormat("en-US").format(task.price * task.quantity) }}
         </td>
-        <ActivitiesList :task="task" />
+        <ActivitiesList @updated="on_activity_updated($event)" :task="task" />
         <td>
             {{
                 _.sumBy(task.activities, (activity) =>

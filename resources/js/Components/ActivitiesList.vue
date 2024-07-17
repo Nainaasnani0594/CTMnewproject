@@ -1,13 +1,16 @@
 <script setup>
 import CustomView from "@/Components/CustomView.vue";
 import dayjs from "dayjs";
-import { defineProps, ref } from "vue";
+import { defineProps, defineEmits, ref } from "vue";
 const props = defineProps({
     task: {
         type: Object,
         required: true,
     },
 });
+
+const emit = defineEmits(["updated"]);
+
 
 const updated_activity = (activity_id) => {
     const options = {
@@ -23,6 +26,7 @@ const updated_activity = (activity_id) => {
         .request(options)
         .then((response) => {
             console.log(response.data);
+            emit("updated", response.data);
         })
         .catch((error) => {
             console.error(error);

@@ -1,8 +1,9 @@
 <script setup>
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout.vue";
+import AddGroupForm from "@/Components/AddGroupForm.vue";
+import AddTaskForm from "@/Components/AddTaskForm.vue";
 import { Head } from "@inertiajs/vue3";
 import { ref, defineProps } from "vue";
-
 
 const props = defineProps({
     project: {
@@ -17,10 +18,8 @@ props.project.groups.forEach((group) => {
     group_dropdowns[group.id] = ref(false);
 });
 
-
 import ProjectDetails from "@/Components/ProjectDetails.vue";
 import GroupsList from "@/Components/GroupsList.vue";
-
 </script>
 
 <template>
@@ -38,6 +37,15 @@ import GroupsList from "@/Components/GroupsList.vue";
                 <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
                     <div class="p-6 text-gray-900">
                         <ProjectDetails :project="project" />
+                    </div>
+                </div>
+                <div
+                    class="mt-8 bg-white overflow-hidden shadow-sm sm:rounded-lg"
+                >
+                    <div class="p-6 text-gray-900">
+                        <AddGroupForm :project-id="project.id" />
+                        <hr />
+                        <AddTaskForm :groups="project.groups" />
                     </div>
                 </div>
                 <div

@@ -1,16 +1,29 @@
 <script setup>
 import { to_roman_numerical } from "@/util";
 import CustomView from "@/Components/CustomView.vue";
+import { defineProps, ref } from "vue";
 defineProps({
     project: {
         type: Object,
         required: true,
     },
 });
+const is_visible = ref(false);
 </script>
 
 <template>
-    <div class="grid grid-cols-3 gap-4">
+    <div class="flex justify-between items-center">
+        <h2 class="font-semibold text-xl text-gray-800 leading-tight">
+            Project Details
+        </h2>
+        <button
+            @click="is_visible = !is_visible"
+            class="btn btn-primary max-w-xs w-full"
+        >
+            {{ is_visible ? "Hide" : "Show" }} Details
+        </button>
+    </div>
+    <div v-if="is_visible" class="grid grid-cols-3 gap-4">
         <CustomView _label="Sponsor Name" :_value="project.sponsor_name" />
         <CustomView _label="Project Name" :_value="project.project_name" />
 

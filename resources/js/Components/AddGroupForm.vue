@@ -28,6 +28,6 @@ const submit = () => {
     <form class="flex items-center gap-2" @submit.prevent="submit">
         <CustomInput _id="name" _label="Group Name" v-model="form.name" :error="form.errors.name" />
         <input type="hidden" name="project_id" v-model="form.project_id" />
-        <button class="btn btn-primary">Add Group</button>
+        <input type="submit" class="btn btn-primary max-w-xs w-full" value="Add Group" />
     </form>
 </template>
