@@ -1,16 +1,17 @@
 <script setup>
-import CustomView from "@/Components/CustomView.vue";
-import dayjs from "dayjs";
 import { defineProps, defineEmits, ref } from "vue";
 const props = defineProps({
     task: {
         type: Object,
         required: true,
     },
+    locks: {
+        type: Array,
+        required: true,
+    },
 });
 
 const emit = defineEmits(["updated"]);
-
 
 const updated_activity = (activity_id) => {
     const options = {
@@ -43,7 +44,10 @@ props.task.activities.forEach((activity) => {
         <input
             type="text"
             v-model="activities[activity.id]"
-            class="w-10 p-0 text-right pr-1"
+            :disabled="
+                locks.find((lock) => lock.date === activity.date).is_locked
+            "
+            class="w-6 p-0 text-center disabled:opacity-65"
             @change="updated_activity(activity.id)"
         />
     </td>

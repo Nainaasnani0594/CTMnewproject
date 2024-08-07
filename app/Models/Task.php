@@ -48,5 +48,9 @@ class Task extends Model
 
             Activity::insert($activities);
         });
+
+        static::deleting(function ($task) {
+            $task->activities()->delete();
+        });
     }
 }

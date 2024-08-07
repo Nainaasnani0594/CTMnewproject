@@ -7,6 +7,10 @@ const props = defineProps({
         type: Object,
         required: true,
     },
+    locks: {
+        type: Array,
+        required: true,
+    },
 });
 </script>
 
@@ -16,13 +20,15 @@ const props = defineProps({
             {{ group.name }}
         </th>
     </tr>
-    <TasksList :tasks="group.tasks" />
+    <TasksList :tasks="group.tasks" :locks="locks" />
     <tr>
         <th colspan="4">{{ group.name }} Total</th>
         <th>
-            {{ Intl.NumberFormat("en-US").format(
-                _.sumBy(group.tasks, (task) => task.price * task.quantity)
-            ) }}
+            {{
+                Intl.NumberFormat("en-US").format(
+                    _.sumBy(group.tasks, (task) => task.price * task.quantity)
+                )
+            }}
         </th>
     </tr>
 </template>

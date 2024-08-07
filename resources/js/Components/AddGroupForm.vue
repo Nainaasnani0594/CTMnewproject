@@ -15,7 +15,7 @@ const form = useForm({
 });
 
 const submit = () => {
-    form.post(route('groups.store'), {
+    form.post(route("groups.store"), {
         preserveScroll: true,
         onSuccess: () => {
             form.reset();
@@ -25,9 +25,18 @@ const submit = () => {
 </script>
 
 <template>
-    <form class="flex items-center gap-2" @submit.prevent="submit">
-        <CustomInput _id="name" _label="Group Name" v-model="form.name" :error="form.errors.name" />
+    <form class="flex items-center flex-col mb-4" @submit.prevent="submit">
+        <CustomInput
+            _id="name"
+            _label="Group Name"
+            v-model="form.name"
+            :error="form.errors.name"
+        />
         <input type="hidden" name="project_id" v-model="form.project_id" />
-        <input type="submit" class="btn btn-primary max-w-xs w-full" value="Add Group" />
+        <input
+            type="submit"
+            class="btn btn-primary max-w-xs w-full"
+            value="Add Group"
+        />
     </form>
 </template>

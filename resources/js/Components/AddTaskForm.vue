@@ -29,44 +29,54 @@ const submit = () => {
 </script>
 
 <template>
-    <form class="grid grid-cols-3" @submit.prevent="submit">
-        <CustomSelect
-            _id="group_id"
-            _label="Group"
-            v-model="form.group_id"
-            :error="form.errors.group_id"
-        >
-            <option v-for="group in groups" :key="group.id" :value="group.id">
-                {{ group.name }}
-            </option>
-        </CustomSelect>
+    <form class="flex flex-col mt-2" @submit.prevent="submit">
+        <div class="flex gap-2">
+            <CustomSelect
+                _id="group_id"
+                _label="Group"
+                v-model="form.group_id"
+                :error="form.errors.group_id"
+            >
+                <option
+                    v-for="group in groups"
+                    :key="group.id"
+                    :value="group.id"
+                >
+                    {{ group.name }}
+                </option>
+            </CustomSelect>
 
-        <CustomInput
-            _id="name"
-            _label="Task Name"
-            v-model="form.name"
-            :error="form.errors.name"
+            <CustomInput
+                _id="name"
+                _label="Task Name"
+                v-model="form.name"
+                :error="form.errors.name"
+            />
+            <CustomInput
+                _id="unit"
+                _label="Unit"
+                v-model="form.unit"
+                :error="form.errors.unit"
+            />
+            <CustomInput
+                _id="quantity"
+                _label="Quantity"
+                v-model="form.quantity"
+                :error="form.errors.quantity"
+                _type="number"
+            />
+            <CustomInput
+                _id="price"
+                _label="Price"
+                v-model="form.price"
+                :error="form.errors.price"
+                _type="number"
+            />
+        </div>
+        <input
+            type="submit"
+            class="self-center btn btn-primary max-w-xs w-full"
+            value="Add Task"
         />
-        <CustomInput
-            _id="unit"
-            _label="Unit"
-            v-model="form.unit"
-            :error="form.errors.unit"
-        />
-        <CustomInput
-            _id="quantity"
-            _label="Quantity"
-            v-model="form.quantity"
-            :error="form.errors.quantity"
-            _type="number"
-        />
-        <CustomInput
-            _id="price"
-            _label="Price"
-            v-model="form.price"
-            :error="form.errors.price"
-            _type="number"
-        />
-        <input type="submit" class="self-center btn btn-primary max-w-xs" value="Add Task" />
     </form>
 </template>

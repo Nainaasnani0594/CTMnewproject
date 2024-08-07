@@ -56,4 +56,31 @@ class Project extends Model
     {
         return $this->hasMany(Group::class);
     }
+
+    public function locks()
+    {
+        return $this->hasMany(Lock::class);
+    }
+
+    protected static function booted()
+    {
+        static::created(function ($project) {
+            $months = $project->months;
+            $locks = [];
+            foreach ($months as $month) {
+                $locks[] = [
+                    'project_id' => $project->id,
+                    'date' => $month,
+                    'is_locked' => false,
+                ];
+            }
+
+            Lock::insert($locks);
+        });
+
+        static::deleting(function ($project) {
+            $project->groups()->delete();
+            $project->locks()->delete();
+        });
+    }
 }
