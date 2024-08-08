@@ -74,6 +74,7 @@ const handleLockChange = (lock) => {
                     >
                         {{ locks[index].is_locked ? "Actual" : "Forecast" }}
                         <input
+                            class="checkbox checkbox-primary"
                             type="checkbox"
                             v-model="locks[index].is_locked"
                             @change="handleLockChange(lock)"

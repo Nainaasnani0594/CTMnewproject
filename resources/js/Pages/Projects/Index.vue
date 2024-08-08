@@ -1,6 +1,6 @@
 <script setup>
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout.vue";
-import { Head, Link } from "@inertiajs/vue3";
+import { Head, Link, router } from "@inertiajs/vue3";
 
 defineProps({
     projects: {
@@ -10,7 +10,11 @@ defineProps({
 });
 
 import { to_roman_numerical } from "@/util";
-
+const deleteProject = (id) => {
+    if (confirm("Are you sure you want to delete this project?")) {
+        router.delete(route("projects.destroy", id));
+    }
+};
 </script>
 
 <template>
@@ -18,16 +22,27 @@ import { to_roman_numerical } from "@/util";
 
     <AuthenticatedLayout>
         <template #header>
-            <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-                Projects
-            </h2>
+            <div class="flex justify-between items-center">
+                <h2 class="font-semibold text-xl text-gray-800 leading-tight">
+                    Projects
+                </h2>
+                <Link :href="route('projects.create')" class="btn btn-primary"
+                    >Create Project</Link
+                >
+            </div>
         </template>
 
         <div class="py-12">
             <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
                 <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
                     <div class="p-6 text-gray-900">
-                        <div class="overflow-x-auto">
+                        <div
+                            v-if="projects.length === 0"
+                            class="text-center py-4"
+                        >
+                            No projects exist.
+                        </div>
+                        <div v-else class="overflow-x-auto">
                             <table class="table">
                                 <thead>
                                     <tr>
@@ -78,10 +93,14 @@ import { to_roman_numerical } from "@/util";
                                                 class="btn btn-sm btn-primary"
                                                 >View</Link
                                             >
-                                            <Link
+                                            <button
+                                                @click="
+                                                    deleteProject(project.id)
+                                                "
                                                 class="btn btn-sm btn-error"
-                                                >Delete</Link
                                             >
+                                                Delete
+                                            </button>
                                         </td>
                                     </tr>
                                 </tbody>
