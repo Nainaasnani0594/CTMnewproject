@@ -22,7 +22,7 @@ const props = defineProps({
     </tr>
     <TasksList :tasks="group.tasks" :locks="locks" />
     <tr>
-        <th colspan="4">{{ group.name }} Total</th>
+        <th colspan="6">{{ group.name }} Total</th>
         <th>
             {{
                 Intl.NumberFormat("en-US").format(

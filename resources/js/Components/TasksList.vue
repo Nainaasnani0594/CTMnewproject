@@ -33,11 +33,17 @@ const on_activity_updated = (updated_activity) => {
 
 <template>
     <tr v-for="task in tasks" :key="task.id">
-        <td>
+        <th>
             {{ task.name }}
-        </td>
+        </th>
         <td>
             {{ task.unit }}
+        </td>
+        <td>
+            {{  task.start_date }}
+        </td>
+        <td>
+            {{ task.end_date }}
         </td>
         <td>
             {{ task.quantity }}

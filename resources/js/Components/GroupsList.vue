@@ -35,11 +35,13 @@ const handleLockChange = (lock) => {
 
 <template>
     <div class="overflow-x-auto">
-        <table class="table">
+        <table class="table table-pin-rows table-pin-cols">
             <thead class="text-center">
                 <tr>
                     <th>Tasks</th>
                     <th>UNIT</th>
+                    <th>Start Date</th>
+                    <th>End Date</th>
                     <th>No. of Units</th>
                     <th>Unit Price</th>
                     <th>Total Task Value</th>

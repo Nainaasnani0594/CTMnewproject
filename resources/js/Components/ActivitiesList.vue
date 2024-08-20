@@ -47,7 +47,7 @@ props.task.activities.forEach((activity) => {
             :disabled="
                 locks.find((lock) => lock.date === activity.date).is_locked
             "
-            class="w-6 p-0 text-center disabled:opacity-65"
+            class="w-6 p-0 text-center disabled:opacity-65 border-0"
             @change="updated_activity(activity.id)"
         />
     </td>

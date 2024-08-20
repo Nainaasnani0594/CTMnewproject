@@ -1,8 +1,10 @@
 <?php
 
+use App\Exports\SampleExport;
 use App\Http\Controllers\GroupController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ProjectController;
+use App\Http\Controllers\SampleExportController;
 use App\Http\Controllers\TaskController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
@@ -40,6 +42,7 @@ Route::middleware('auth')->group(function () {
     Route::resource('/projects', ProjectController::class);
     Route::resource('/groups', GroupController::class);
     Route::resource('/tasks', TaskController::class);
+    Route::get('/sample_export/{project}', SampleExportController::class)->name('sample_export');
 });
 
 require __DIR__ . '/auth.php';
