@@ -57,6 +57,18 @@ class Project extends Model
         return $this->hasMany(Group::class);
     }
 
+    public function assignedUsers()
+    {
+        return $this->morphToMany(User::class, 'assignable', 'assignables', 'assignable_id', 'assigned_id')
+            ->where('assigned_type', User::class);
+    }
+
+    public function assignedTeams()
+    {
+        return $this->morphToMany(Team::class, 'assignable', 'assignables', 'assignable_id', 'assigned_id')
+            ->where('assigned_type', Team::class);
+    }
+
     public function locks()
     {
         return $this->hasMany(Lock::class);

@@ -1,6 +1,6 @@
 <script setup>
 import ActivitiesList from "@/Components/ActivitiesList.vue";
-import { defineProps, onMounted, ref } from "vue";
+import { defineProps, watch, ref } from "vue";
 import dayjs from "dayjs";
 import _ from "lodash";
 
@@ -25,10 +25,9 @@ const props = defineProps({
 
 const tasks = ref(props.tasks);
 
-onMounted(() => {
-    console.log(props.locks);
+watch(() => props.tasks, (_) => {
+    tasks.value = props.tasks;
 });
-
 const on_activity_updated = (updated_activity) => {
     // update the value of activity using updated_activity in props.tasks
     const task_index = tasks.value.findIndex(

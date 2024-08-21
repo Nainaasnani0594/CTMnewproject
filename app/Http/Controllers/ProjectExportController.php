@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Lock;
 use App\Models\Project;
 use Carbon\Carbon;
 use Illuminate\Http\Request;

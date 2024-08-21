@@ -19,7 +19,7 @@ class DatabaseSeeder extends Seeder
             'email' => 'admin@seyom.in',
         ]);
 
-        $roles = ['Super Admin', 'Admin', 'Manager', 'Excetive'];
+        $roles = ['Super Admin', 'Admin', 'Manager', 'Executive'];
         foreach ($roles as $role) {
             \Spatie\Permission\Models\Role::create(['name' => $role]);
         }

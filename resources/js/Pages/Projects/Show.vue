@@ -4,8 +4,10 @@ import AddGroupForm from "@/Components/AddGroupForm.vue";
 import AddTaskForm from "@/Components/AddTaskForm.vue";
 import { Head, Link } from "@inertiajs/vue3";
 import { ref, defineProps } from "vue";
-// axios
+import ProjectDetails from "@/Components/ProjectDetails.vue";
+import GroupsList from "@/Components/GroupsList.vue";
 import axios from "axios";
+import { watch } from "vue";
 
 const props = defineProps({
     project: {
@@ -15,15 +17,6 @@ const props = defineProps({
 });
 
 const project = ref(props.project);
-
-const group_dropdowns = {};
-
-project.value.groups.forEach((group) => {
-    group_dropdowns[group.id] = ref(false);
-});
-
-import ProjectDetails from "@/Components/ProjectDetails.vue";
-import GroupsList from "@/Components/GroupsList.vue";
 
 const creation_form_is_visible = ref(false);
 const project_details_is_visible = ref(false);
@@ -46,6 +39,15 @@ const import_file = () => {
         .catch((error) => {
             console.error(error);
         });
+};
+
+watch(() => props.project, (_) => {
+    refresh();
+}, { deep: true });
+
+const refresh = () => {
+    console.log("refreshing");
+    project.value = props.project;
 };
 </script>
 
@@ -125,9 +127,10 @@ const import_file = () => {
                         </h2>
                     </div>
                     <div class="p-6 text-gray-900">
-                        <AddGroupForm :project-id="project.id" />
+                        <AddGroupForm :project-id="project.id" @refresh="refresh" />
                         <hr />
-                        <AddTaskForm :groups="project.groups" />
+                        <AddTaskForm @refresh="refresh"
+                         :groups="project.groups" />
                     </div>
                 </div>
                 <div

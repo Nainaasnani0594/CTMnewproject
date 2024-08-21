@@ -1,6 +1,7 @@
 <script setup>
 import TasksList from "./TasksList.vue";
 import _ from "lodash";
+import { defineProps, ref, watch } from "vue";
 
 const props = defineProps({
     group: {
@@ -20,6 +21,11 @@ const props = defineProps({
         required: true,
     },
 });
+
+const tasks = ref(props.group.tasks);
+watch(() => props.group.tasks, (_) => {
+    tasks.value = props.group.tasks;
+});
 </script>
 
 <template>
@@ -28,7 +34,7 @@ const props = defineProps({
             {{ group.name }}
         </th>
     </tr>
-    <TasksList :tasks="group.tasks" :locks="locks" :min="min" :max="max" />
+    <TasksList :tasks="tasks" :locks="locks" :min="min" :max="max" />
     <tr>
         <th colspan="6">{{ group.name }} Total</th>
         <th>

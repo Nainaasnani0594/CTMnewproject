@@ -33,7 +33,11 @@ class UserResource extends Resource
                     ->email()
                     ->maxLength(255)
                     ->unique('users', 'email', ignoreRecord: true),
-                Forms\Components\Select::make('roles')->multiple()->relationship('roles', 'name')
+                Forms\Components\Select::make('roles')->multiple()->relationship('roles', 'name', fn(Builder $query) => $query->whereIn('name', ['Admin', 'Manager', 'Executive']))
+                    ->preload(),
+                Forms\Components\Select::make('teams')
+                    ->multiple()
+                    ->relationship('teams', 'name')
                     ->preload(),
             ]);
     }
@@ -48,6 +52,12 @@ class UserResource extends Resource
                 Tables\Columns\TextColumn::make('email')
                     ->searchable()
                     ->sortable(),
+                Tables\Columns\TextColumn::make('roles.name')
+                    ->sortable()
+                    ->searchable(),
+                Tables\Columns\TextColumn::make('teams.name')
+                    ->sortable()
+                    ->searchable(),
             ])
             ->filters([
                 //

@@ -2,6 +2,9 @@
 import { useForm } from "@inertiajs/vue3";
 import CustomInput from "@/Components/CustomInput.vue";
 import CustomSelect from "@/Components/CustomSelect.vue";
+import { defineEmits, defineProps } from "vue";
+
+const emit = defineEmits(["refresh"]);
 
 const props = defineProps({
     groups: {
@@ -21,8 +24,10 @@ const form = useForm({
 const submit = () => {
     form.post(route("tasks.store"), {
         preserveScroll: true,
+        preserveState: true,
         onSuccess: () => {
             form.reset();
+            emit("refresh");
         },
     });
 };

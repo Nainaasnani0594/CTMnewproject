@@ -56,4 +56,21 @@ class User extends Authenticatable implements FilamentUser
     {
         return $this->hasMany(Project::class, 'created_by');
     }
+
+    public function teams()
+    {
+        return $this->belongsToMany(Team::class)->withTimestamps();
+    }
+
+    public function assignedProjects()
+    {
+        return $this->morphedByMany(Project::class, 'assignable', 'assignables', 'assigned_id')
+            ->where('assigned_type', User::class);
+    }
+
+    public function assignedGroups()
+    {
+        return $this->morphedByMany(Group::class, 'assignable', 'assignables', 'assigned_id')
+            ->where('assigned_type', User::class);
+    }
 }
