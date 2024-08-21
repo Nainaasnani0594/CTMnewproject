@@ -4,6 +4,7 @@ use App\Exports\SampleExport;
 use App\Http\Controllers\GroupController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ProjectController;
+use App\Http\Controllers\ProjectExportController;
 use App\Http\Controllers\SampleExportController;
 use App\Http\Controllers\TaskController;
 use Illuminate\Foundation\Application;
@@ -39,10 +40,11 @@ Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
-    Route::resource('/projects', ProjectController::class);
-    Route::resource('/groups', GroupController::class);
-    Route::resource('/tasks', TaskController::class);
+    Route::resource('/projects', ProjectController::class)->except(['edit', 'update']);
+    Route::resource('/groups', GroupController::class)->only('store');
+    Route::resource('/tasks', TaskController::class)->only('store');
     Route::get('/sample_export/{project}', SampleExportController::class)->name('sample_export');
+    Route::get('/project_export/{project}', ProjectExportController::class)->name('project_export');
 });
 
 require __DIR__ . '/auth.php';

@@ -75,23 +75,31 @@ const import_file = () => {
                     {{ creation_form_is_visible ? "Hide" : "Show" }}
                     Creation Form
                 </button>
-                    <input
-                        type="file"
-                        accept=".csv,.xlsx,.xls"
-                        class="hidden"
-                        ref="file_input"
-                        @change="import_file"
-                    />
-                    <button
-                        @click="$refs.file_input.click()"
-                        class="btn btn-primary"
-                    >
-                        Import
-                    </button>
-                    <a target="_blank" :href="route('sample_export', project.id)"
-                        class="btn btn-primary"
-                        >Sample</a
-                    >
+                <input
+                    type="file"
+                    accept=".csv,.xlsx,.xls"
+                    class="hidden"
+                    ref="file_input"
+                    @change="import_file"
+                />
+                <button
+                    @click="$refs.file_input.click()"
+                    class="btn btn-primary"
+                >
+                    Import
+                </button>
+                <a
+                    target="_blank"
+                    :href="route('project_export', project.id)"
+                    class="btn btn-primary"
+                    >Export</a
+                >
+                <a
+                    target="_blank"
+                    :href="route('sample_export', project.id)"
+                    class="btn btn-secondary"
+                    >Sample</a
+                >
             </div>
         </template>
 

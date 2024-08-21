@@ -26,14 +26,15 @@ class UserResource extends Resource
                 Forms\Components\TextInput::make('name')
                     ->label('Name')
                     ->required()
-                    ->length(255),
+                    ->maxLength(255),
                 Forms\Components\TextInput::make('email')
                     ->label('Email')
                     ->required()
                     ->email()
-                    ->length(255)
-                    ->unique('users', 'email')
-
+                    ->maxLength(255)
+                    ->unique('users', 'email', ignoreRecord: true),
+                Forms\Components\Select::make('roles')->multiple()->relationship('roles', 'name')
+                    ->preload(),
             ]);
     }
 

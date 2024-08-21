@@ -11,6 +11,14 @@ const props = defineProps({
         type: Array,
         required: true,
     },
+    min: {
+        type: String,
+        required: true,
+    },
+    max: {
+        type: String,
+        required: true,
+    },
 });
 </script>
 
@@ -20,7 +28,7 @@ const props = defineProps({
             {{ group.name }}
         </th>
     </tr>
-    <TasksList :tasks="group.tasks" :locks="locks" />
+    <TasksList :tasks="group.tasks" :locks="locks" :min="min" :max="max" />
     <tr>
         <th colspan="6">{{ group.name }} Total</th>
         <th>

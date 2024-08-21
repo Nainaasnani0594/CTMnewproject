@@ -3,6 +3,7 @@
 use App\Http\Controllers\Api\ActivityController;
 use App\Http\Controllers\Api\ImportController;
 use App\Http\Controllers\Api\LockController;
+use App\Http\Controllers\Api\TaskController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -22,5 +23,6 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 });
 
 Route::resource('activities', ActivityController::class)->only(['update']);
+Route::apiResource('tasks', TaskController::class)->only(['update']);
 Route::apiResource('locks', LockController::class)->only(['update']);
 Route::post('import/{project}', ImportController::class)->name('import');

@@ -18,6 +18,8 @@ class Task extends Model
         'unit',
         'quantity',
         'price',
+        'start_date',
+        'end_date',
     ];
 
     public function group()

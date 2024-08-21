@@ -1,6 +1,6 @@
 <script setup>
 import ActivitiesList from "@/Components/ActivitiesList.vue";
-import { defineProps, onMounted } from "vue";
+import { defineProps, onMounted, ref } from "vue";
 import dayjs from "dayjs";
 import _ from "lodash";
 
@@ -13,21 +13,79 @@ const props = defineProps({
         type: Array,
         required: true,
     },
+    min: {
+        type: String,
+        required: true,
+    },
+    max: {
+        type: String,
+        required: true,
+    },
 });
+
+const tasks = ref(props.tasks);
+
 onMounted(() => {
-    console.log(props.tasks);
+    console.log(props.locks);
 });
+
 const on_activity_updated = (updated_activity) => {
     // update the value of activity using updated_activity in props.tasks
-    const task_index = props.tasks.findIndex(
+    const task_index = tasks.value.findIndex(
         (task) => task.id === updated_activity.task_id
     );
-    const activity_index = props.tasks[task_index].activities.findIndex(
+    const activity_index = tasks.value[task_index].activities.findIndex(
         (activity) => activity.id === updated_activity.id
     );
-    props.tasks[task_index].activities[activity_index].value = Number(
+    tasks.value[task_index].activities[activity_index].value = Number(
         updated_activity.value
     );
+};
+
+const updated_date = (task_id, start_or_end) => {
+    const options = {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        url: route("tasks.update", task_id),
+        data: {},
+    };
+
+    if (start_or_end === "start") {
+        options.data.start_date = tasks.value.find(
+            (task) => task.id === task_id
+        ).start_date;
+    } else {
+        options.data.end_date = tasks.value.find(
+            (task) => task.id === task_id
+        ).end_date;
+    }
+
+    axios
+        .request(options)
+        .then((response) => {
+            const task = tasks.value.find((task) => task.id === task_id);
+            task = response.data.task;
+        })
+        .catch((error) => {
+            console.error(error);
+        });
+};
+
+const isLocked = (date) => {
+    const lockEntry = props.locks.find((lock) =>
+        dayjs(lock.date).isSame(dayjs(date), "month")
+    );
+    return lockEntry ? lockEntry.is_locked : false;
+};
+
+const sumActual = (activities) => {
+    return _.sumBy(activities, (activity) =>
+        isLocked(activity.date) ? activity.value : 0
+    );
+};
+
+const sumTotal = (activities) => {
+    return _.sumBy(activities, "value");
 };
 </script>
 
@@ -40,10 +98,24 @@ const on_activity_updated = (updated_activity) => {
             {{ task.unit }}
         </td>
         <td>
-            {{  task.start_date }}
+            <input
+                type="date"
+                class="input-primary input"
+                v-model="task.start_date"
+                @change="updated_date(task.id, 'start')"
+                :min="min"
+                :max="max"
+            />
         </td>
         <td>
-            {{ task.end_date }}
+            <input
+                type="date"
+                class="input-primary input"
+                v-model="task.end_date"
+                @change="updated_date(task.id, 'end')"
+                :min="min < task.start_date ? task.start_date : min"
+                :max="max"
+            />
         </td>
         <td>
             {{ task.quantity }}
@@ -60,35 +132,21 @@ const on_activity_updated = (updated_activity) => {
             :locks="locks"
         />
         <td>
-            {{
-                _.sumBy(task.activities, (activity) =>
-                    dayjs(activity.date) < dayjs().startOf("month")
-                        ? activity.value
-                        : 0
-                )
-            }}
+            {{ sumActual(task.activities) }}
         </td>
         <td>
-            {{ _.sumBy(task.activities, (activity) => activity.value) }}
+            {{ sumTotal(task.activities) }}
         </td>
         <td>
             {{
                 Intl.NumberFormat("en-US").format(
-                    _.sumBy(task.activities, (activity) =>
-                        dayjs(activity.date) < dayjs().startOf("month")
-                            ? activity.value
-                            : 0
-                    ) * task.price
+                    sumActual(task.activities) * task.price
                 )
             }}
         </td>
         <td>
             {{
-                _.sumBy(task.activities, (activity) =>
-                    dayjs(activity.date) < dayjs().startOf("month")
-                        ? activity.value
-                        : 0
-                ) >= task.quantity
+                sumActual(task.activities) >= task.quantity
                     ? "Task Done"
                     : "WIP"
             }}

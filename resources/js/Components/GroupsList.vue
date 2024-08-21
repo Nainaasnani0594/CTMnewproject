@@ -65,6 +65,8 @@ const handleLockChange = (lock) => {
                     <th></th>
                     <th></th>
                     <th></th>
+                    <th></th>
+                    <th></th>
                     <td
                         width="56px"
                         class="px-0.5 text-xs"
@@ -88,6 +90,13 @@ const handleLockChange = (lock) => {
                     :key="group.id"
                     :group="group"
                     :locks="locks"
+                    :min="project.activity_start_date"
+                    :max="
+                        dayjs(project.activity_start_date)
+                            .add(project.clinical_duration, 'month')
+                            .subtract(1, 'day')
+                            .format('YYYY-MM-DD')
+                    "
                 />
             </tbody>
         </table>
