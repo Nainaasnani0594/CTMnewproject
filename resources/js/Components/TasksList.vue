@@ -103,8 +103,8 @@ const sumTotal = (activities) => {
         <td>
             {{ task.unit }}
         </td>
-        <td>
-            <input v-if="hasRole(['Admin', 'Super Admin'], auth.user)"
+        <td  v-if="hasRole(['Admin', 'Super Admin'], auth.user)">
+            <input
                 type="date"
                 class="input-primary input"
                 v-model="task.start_date"
@@ -113,8 +113,8 @@ const sumTotal = (activities) => {
                 :max="max"
             />
         </td>
-        <td>
-            <input v-if="hasRole(['Admin', 'Super Admin'], auth.user)"
+        <td  v-if="hasRole(['Admin', 'Super Admin'], auth.user)">
+            <input
                 type="date"
                 class="input-primary input"
                 v-model="task.end_date"

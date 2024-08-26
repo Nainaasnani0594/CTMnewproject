@@ -81,7 +81,8 @@ const handleLockChange = (lock) => {
                             'tracking-[2px]': locks[index].is_locked,
                         }"
                     >
-                        {{ locks[index].is_locked ? "Actual" : "Forecast" }}
+                        <span>{{ locks[index].is_locked ? "Actual" : "Forecast" }}</span>
+                        <br>
                         <input
                             class="checkbox checkbox-primary"
                             type="checkbox"
