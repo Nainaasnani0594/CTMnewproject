@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Models\Project;
 use App\Http\Requests\StoreProjectRequest;
 use App\Http\Requests\UpdateProjectRequest;
+use App\Models\Team;
+use App\Models\User;
 use Inertia\Inertia;
 
 class ProjectController extends Controller
@@ -48,6 +50,8 @@ class ProjectController extends Controller
     {
         return Inertia::render('Projects/Show', [
             'project' => $project->load('groups.tasks.activities', 'locks'),
+            'users' => User::all(),
+            'teams' => Team::all(),
         ]);
     }
 

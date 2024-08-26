@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Api\ActivityController;
+use App\Http\Controllers\Api\AssignableController;
 use App\Http\Controllers\Api\ImportController;
 use App\Http\Controllers\Api\LockController;
 use App\Http\Controllers\Api\TaskController;
@@ -26,3 +27,7 @@ Route::resource('activities', ActivityController::class)->only(['update']);
 Route::apiResource('tasks', TaskController::class)->only(['update']);
 Route::apiResource('locks', LockController::class)->only(['update']);
 Route::post('import/{project}', ImportController::class)->name('import');
+
+Route::post('/assign', [AssignableController::class, 'assign']);
+Route::post('/unassign', [AssignableController::class, 'unassign']);
+Route::get('/assignments', [AssignableController::class, 'getAssignments']);

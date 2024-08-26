@@ -12,12 +12,13 @@ use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use Illuminate\Support\Facades\Hash;
 
 class UserResource extends Resource
 {
     protected static ?string $model = User::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $navigationIcon = 'heroicon-o-user';
 
     public static function form(Form $form): Form
     {
@@ -33,12 +34,21 @@ class UserResource extends Resource
                     ->email()
                     ->maxLength(255)
                     ->unique('users', 'email', ignoreRecord: true),
+                Forms\Components\TextInput::make('password')
+                    ->password()
+                    ->dehydrateStateUsing(fn($state) => Hash::make($state))
+                    ->dehydrated(fn($state) => filled($state))
+                    ->required(fn(string $context): bool => $context === 'create')
+                    ->maxLength(255),
+                Forms\Components\TextInput::make('password_confirmation')
+                    ->required(fn(string $context): bool => $context === 'create'),
                 Forms\Components\Select::make('roles')->multiple()->relationship('roles', 'name', fn(Builder $query) => $query->whereIn('name', ['Admin', 'Manager', 'Executive']))
                     ->preload(),
                 Forms\Components\Select::make('teams')
                     ->multiple()
                     ->relationship('teams', 'name')
                     ->preload(),
+
             ]);
     }
 

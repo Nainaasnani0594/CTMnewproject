@@ -2,21 +2,32 @@
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout.vue";
 import AddGroupForm from "@/Components/AddGroupForm.vue";
 import AddTaskForm from "@/Components/AddTaskForm.vue";
-import { Head, Link } from "@inertiajs/vue3";
+import { Head } from "@inertiajs/vue3";
 import { ref, defineProps } from "vue";
 import ProjectDetails from "@/Components/ProjectDetails.vue";
 import GroupsList from "@/Components/GroupsList.vue";
 import axios from "axios";
 import { watch } from "vue";
+import Multiselect from "vue-multiselect";
 
 const props = defineProps({
     project: {
         type: Object,
         required: true,
     },
+    users: {
+        type: Array,
+        required: true,
+    },
+    teams: {
+        type: Array,
+        required: true,
+    },
 });
 
 const project = ref(props.project);
+const selected_users = ref([]);
+const selected_teams = ref([]);
 
 const creation_form_is_visible = ref(false);
 const project_details_is_visible = ref(false);
@@ -41,9 +52,13 @@ const import_file = () => {
         });
 };
 
-watch(() => props.project, (_) => {
-    refresh();
-}, { deep: true });
+watch(
+    () => props.project,
+    (_) => {
+        refresh();
+    },
+    { deep: true }
+);
 
 const refresh = () => {
     console.log("refreshing");
@@ -107,6 +122,37 @@ const refresh = () => {
 
         <div class="py-12">
             <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
+                <div class="bg-white shadow-sm sm:rounded-lg">
+                    <div class="p-6 text-gray-900">
+                        <h2
+                            class="font-semibold text-xl text-gray-800 leading-tight"
+                        >
+                            Assign Users and Teams
+                        </h2>
+                        <div class="flex gap-4 mt-4">
+                            <label class="w-full" for="users"
+                                >Users
+                                <multiselect
+                                    v-model="selected_users"
+                                    :options="users"
+                                    label="name"
+                                    track-by="id"
+                                    :multiple="true"
+                                ></multiselect>
+                            </label>
+                            <label class="w-full" for="teams"
+                                >Teams
+                                <multiselect
+                                    v-model="selected_teams"
+                                    :options="teams"
+                                    label="name"
+                                    track-by="id"
+                                    :multiple="true"
+                                ></multiselect>
+                            </label>
+                        </div>
+                    </div>
+                </div>
                 <div
                     v-if="project_details_is_visible"
                     class="bg-white overflow-hidden shadow-sm sm:rounded-lg"
@@ -127,10 +173,15 @@ const refresh = () => {
                         </h2>
                     </div>
                     <div class="p-6 text-gray-900">
-                        <AddGroupForm :project-id="project.id" @refresh="refresh" />
+                        <AddGroupForm
+                            :project-id="project.id"
+                            @refresh="refresh"
+                        />
                         <hr />
-                        <AddTaskForm @refresh="refresh"
-                         :groups="project.groups" />
+                        <AddTaskForm
+                            @refresh="refresh"
+                            :groups="project.groups"
+                        />
                     </div>
                 </div>
                 <div
