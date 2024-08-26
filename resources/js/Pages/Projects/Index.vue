@@ -1,10 +1,15 @@
 <script setup>
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout.vue";
 import { Head, Link, router } from "@inertiajs/vue3";
+import { hasRole } from "@/util";
 
 defineProps({
     projects: {
         type: Array,
+        required: true,
+    },
+    auth: {
+        type: Object,
         required: true,
     },
 });
@@ -26,7 +31,10 @@ const deleteProject = (id) => {
                 <h2 class="font-semibold text-xl text-gray-800 leading-tight">
                     Projects
                 </h2>
-                <Link :href="route('projects.create')" class="btn btn-primary"
+                <Link
+                    v-if="hasRole(['Admin', 'Super Admin'], auth.user)"
+                    :href="route('projects.create')"
+                    class="btn btn-primary"
                     >Create Project</Link
                 >
             </div>

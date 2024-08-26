@@ -5,6 +5,8 @@ namespace App\Models;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\MorphToMany;
+
 
 class Project extends Model
 {
@@ -57,17 +59,16 @@ class Project extends Model
         return $this->hasMany(Group::class);
     }
 
-    public function assignedUsers()
+    public function users()
     {
-        return $this->morphToMany(User::class, 'assignable', 'assignables', 'assignable_id', 'assigned_id')
-            ->where('assigned_type', User::class);
+        return $this->morphedByMany(User::class, 'assignable', 'project_assignments');
     }
 
-    public function assignedTeams()
+    public function teams()
     {
-        return $this->morphToMany(Team::class, 'assignable', 'assignables', 'assignable_id', 'assigned_id')
-            ->where('assigned_type', Team::class);
+        return $this->morphedByMany(Team::class, 'assignable', 'project_assignments');
     }
+
 
     public function locks()
     {

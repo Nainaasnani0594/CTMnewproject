@@ -25,3 +25,18 @@ export const to_roman_numerical = (number) => {
 
     return result;
 };
+
+export const hasRole = (roles, user) => {
+    // Ensure we have a user and roles array
+    if (!user || !user.roles || !Array.isArray(user.roles)) {
+        return false;
+    }
+
+    // Convert roles parameter to an array if it's a string
+    const rolesToCheck = Array.isArray(roles) ? roles : [roles];
+
+    // Check if the user has any of the specified roles
+    return user.roles.some((userRole) =>
+        rolesToCheck.includes(userRole.name)
+    );
+};

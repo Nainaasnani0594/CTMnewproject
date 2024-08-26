@@ -4,6 +4,7 @@ namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 
+
 use Filament\Models\Contracts\FilamentUser;
 use Filament\Panel;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -64,13 +65,6 @@ class User extends Authenticatable implements FilamentUser
 
     public function assignedProjects()
     {
-        return $this->morphedByMany(Project::class, 'assignable', 'assignables', 'assigned_id')
-            ->where('assigned_type', User::class);
-    }
-
-    public function assignedGroups()
-    {
-        return $this->morphedByMany(Group::class, 'assignable', 'assignables', 'assigned_id')
-            ->where('assigned_type', User::class);
+        return $this->morphToMany(Project::class, 'assignable', 'project_assignments');
     }
 }

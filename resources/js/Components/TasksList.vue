@@ -3,6 +3,7 @@ import ActivitiesList from "@/Components/ActivitiesList.vue";
 import { defineProps, watch, ref } from "vue";
 import dayjs from "dayjs";
 import _ from "lodash";
+import { hasRole } from "@/util";
 
 const props = defineProps({
     tasks: {
@@ -21,13 +22,20 @@ const props = defineProps({
         type: String,
         required: true,
     },
+    auth: {
+        type: Object,
+        required: true,
+    },
 });
 
 const tasks = ref(props.tasks);
 
-watch(() => props.tasks, (_) => {
-    tasks.value = props.tasks;
-});
+watch(
+    () => props.tasks,
+    (_) => {
+        tasks.value = props.tasks;
+    }
+);
 const on_activity_updated = (updated_activity) => {
     // update the value of activity using updated_activity in props.tasks
     const task_index = tasks.value.findIndex(
@@ -58,11 +66,10 @@ const updated_date = (task_id, start_or_end) => {
             (task) => task.id === task_id
         ).end_date;
     }
-
+    const task = tasks.value.find((task) => task.id === task_id);
     axios
         .request(options)
         .then((response) => {
-            const task = tasks.value.find((task) => task.id === task_id);
             task = response.data.task;
         })
         .catch((error) => {
@@ -97,7 +104,7 @@ const sumTotal = (activities) => {
             {{ task.unit }}
         </td>
         <td>
-            <input
+            <input v-if="hasRole(['Admin', 'Super Admin'], auth.user)"
                 type="date"
                 class="input-primary input"
                 v-model="task.start_date"
@@ -107,7 +114,7 @@ const sumTotal = (activities) => {
             />
         </td>
         <td>
-            <input
+            <input v-if="hasRole(['Admin', 'Super Admin'], auth.user)"
                 type="date"
                 class="input-primary input"
                 v-model="task.end_date"

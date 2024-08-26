@@ -11,16 +11,13 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('assignables', function (Blueprint $table) {
+        Schema::create('project_assignments', function (Blueprint $table) {
             $table->id();
+            $table->unsignedBigInteger('project_id');
             $table->morphs('assignable');
-            $table->morphs('assigned');
             $table->timestamps();
-
-            $table->unique(
-                ['assignable_id', 'assignable_type', 'assigned_id', 'assigned_type'],
-                'assignables_unique'
-            );
+        
+            $table->foreign('project_id')->references('id')->on('projects')->onDelete('cascade');
         });
     }
 
@@ -29,6 +26,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('assignables');
+        Schema::dropIfExists('project_assignments');
     }
 };

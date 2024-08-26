@@ -2,9 +2,14 @@
 import GroupItem from "./GroupItem.vue";
 import dayjs from "dayjs";
 import { ref, defineProps } from "vue";
+import { hasRole } from "@/util";
 
 const props = defineProps({
     project: {
+        type: Object,
+        required: true,
+    },
+    auth: {
         type: Object,
         required: true,
     },
@@ -40,8 +45,8 @@ const handleLockChange = (lock) => {
                 <tr>
                     <th>Tasks</th>
                     <th>UNIT</th>
-                    <th>Start Date</th>
-                    <th>End Date</th>
+                    <th v-if="hasRole(['Admin', 'Super Admin'], auth.user)">Start Date</th>
+                    <th v-if="hasRole(['Admin', 'Super Admin'], auth.user)">End Date</th>
                     <th>No. of Units</th>
                     <th>Unit Price</th>
                     <th>Total Task Value</th>
@@ -65,8 +70,8 @@ const handleLockChange = (lock) => {
                     <th></th>
                     <th></th>
                     <th></th>
-                    <th></th>
-                    <th></th>
+                    <th v-if="hasRole(['Admin', 'Super Admin'], auth.user)"></th>
+                    <th v-if="hasRole(['Admin', 'Super Admin'], auth.user)"></th>
                     <td
                         width="56px"
                         class="px-0.5 text-xs"
@@ -86,6 +91,7 @@ const handleLockChange = (lock) => {
                     </td>
                 </tr>
                 <GroupItem
+                :auth="auth"
                     v-for="group in project.groups"
                     :key="group.id"
                     :group="group"

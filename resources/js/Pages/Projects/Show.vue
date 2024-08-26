@@ -9,6 +9,7 @@ import GroupsList from "@/Components/GroupsList.vue";
 import axios from "axios";
 import { watch } from "vue";
 import Multiselect from "vue-multiselect";
+import { hasRole } from "@/util";
 
 const props = defineProps({
     project: {
@@ -23,11 +24,43 @@ const props = defineProps({
         type: Array,
         required: true,
     },
+    auth: {
+        type: Object,
+        required: true,
+    },
 });
 
 const project = ref(props.project);
-const selected_users = ref([]);
-const selected_teams = ref([]);
+const selected_users = ref(project.value.users);
+const selected_teams = ref(project.value.teams);
+
+const updatedAssignments = (type) => {
+    const options = {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        url: route("assignments", project.value.id),
+        data: {
+            assignable_type: type,
+            assignable_id:
+                type == "user"
+                    ? selected_users.value.map((u) => u.id)
+                    : selected_teams.value.map((t) => t.id),
+        },
+    };
+
+    console.log(options);
+
+    axios
+        .request(options)
+        .then((response) => {
+            project.value = response.data.project;
+        })
+        .catch((error) => {
+            console.error(error);
+        });
+};
+
+console.log(props.auth.user);
 
 const creation_form_is_visible = ref(false);
 const project_details_is_visible = ref(false);
@@ -84,6 +117,7 @@ const refresh = () => {
                     {{ project_details_is_visible ? "Hide" : "Show" }} Details
                 </button>
                 <button
+                    v-if="hasRole(['Admin', 'Super Admin'], props.auth.user)"
                     @click="
                         creation_form_is_visible = !creation_form_is_visible
                     "
@@ -100,6 +134,7 @@ const refresh = () => {
                     @change="import_file"
                 />
                 <button
+                    v-if="hasRole(['Admin', 'Super Admin'], props.auth.user)"
                     @click="$refs.file_input.click()"
                     class="btn btn-primary"
                 >
@@ -112,6 +147,7 @@ const refresh = () => {
                     >Export</a
                 >
                 <a
+                    v-if="hasRole(['Admin', 'Super Admin'], props.auth.user)"
                     target="_blank"
                     :href="route('sample_export', project.id)"
                     class="btn btn-secondary"
@@ -138,6 +174,9 @@ const refresh = () => {
                                     label="name"
                                     track-by="id"
                                     :multiple="true"
+                                    @update:modelValue="
+                                        updatedAssignments('user')
+                                    "
                                 ></multiselect>
                             </label>
                             <label class="w-full" for="teams"
@@ -148,6 +187,9 @@ const refresh = () => {
                                     label="name"
                                     track-by="id"
                                     :multiple="true"
+                                    @update:modelValue="
+                                        updatedAssignments('team')
+                                    "
                                 ></multiselect>
                             </label>
                         </div>
@@ -188,7 +230,7 @@ const refresh = () => {
                     class="mt-8 bg-white overflow-hidden shadow-sm sm:rounded-lg"
                 >
                     <div class="p-6 text-gray-900">
-                        <GroupsList :project="project" />
+                        <GroupsList :auth="auth" :project="project" />
                     </div>
                 </div>
             </div>

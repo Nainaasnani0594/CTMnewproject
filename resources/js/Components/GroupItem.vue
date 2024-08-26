@@ -20,12 +20,19 @@ const props = defineProps({
         type: String,
         required: true,
     },
+    auth: {
+        type: Object,
+        required: true,
+    },
 });
 
 const tasks = ref(props.group.tasks);
-watch(() => props.group.tasks, (_) => {
-    tasks.value = props.group.tasks;
-});
+watch(
+    () => props.group.tasks,
+    (_) => {
+        tasks.value = props.group.tasks;
+    }
+);
 </script>
 
 <template>
@@ -34,7 +41,13 @@ watch(() => props.group.tasks, (_) => {
             {{ group.name }}
         </th>
     </tr>
-    <TasksList :tasks="tasks" :locks="locks" :min="min" :max="max" />
+    <TasksList
+        :auth="auth"
+        :tasks="tasks"
+        :locks="locks"
+        :min="min"
+        :max="max"
+    />
     <tr>
         <th colspan="6">{{ group.name }} Total</th>
         <th>

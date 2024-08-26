@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\MorphToMany;
 
 class Group extends Model
 {
@@ -24,18 +25,6 @@ class Group extends Model
     public function tasks()
     {
         return $this->hasMany(Task::class);
-    }
-
-    public function assignedUsers()
-    {
-        return $this->morphToMany(User::class, 'assignable', 'assignables', 'assignable_id', 'assigned_id')
-            ->where('assigned_type', User::class);
-    }
-
-    public function assignedTeams()
-    {
-        return $this->morphToMany(Team::class, 'assignable', 'assignables', 'assignable_id', 'assigned_id')
-            ->where('assigned_type', Team::class);
     }
 
     protected static function booted()

@@ -28,6 +28,4 @@ Route::apiResource('tasks', TaskController::class)->only(['update']);
 Route::apiResource('locks', LockController::class)->only(['update']);
 Route::post('import/{project}', ImportController::class)->name('import');
 
-Route::post('/assign', [AssignableController::class, 'assign']);
-Route::post('/unassign', [AssignableController::class, 'unassign']);
-Route::get('/assignments', [AssignableController::class, 'getAssignments']);
+Route::post('/assignments/{project}', [AssignableController::class, 'assignments'])->name('assignments');
