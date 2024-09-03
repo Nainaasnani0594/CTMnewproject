@@ -13,7 +13,10 @@ class DatabaseSeeder extends Seeder
     public function run(): void
     {
         // \App\Models\User::factory(10)->create();
-
+        $this->call([
+            RolesSeeder::class,
+            // Add other seeders here if needed
+        ]);
         $super_admin = \App\Models\User::factory()->create([
             'name' => 'Admin',
             'email' => 'admin@seyom.in',

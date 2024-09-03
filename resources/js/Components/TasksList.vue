@@ -14,14 +14,6 @@ const props = defineProps({
         type: Array,
         required: true,
     },
-    min: {
-        type: String,
-        required: true,
-    },
-    max: {
-        type: String,
-        required: true,
-    },
     auth: {
         type: Object,
         required: true,
@@ -49,45 +41,15 @@ const on_activity_updated = (updated_activity) => {
     );
 };
 
-const updated_date = (task_id, start_or_end) => {
-    const options = {
-        method: "PATCH",
-        headers: { "Content-Type": "application/json" },
-        url: route("tasks.update", task_id),
-        data: {},
-    };
-
-    if (start_or_end === "start") {
-        options.data.start_date = tasks.value.find(
-            (task) => task.id === task_id
-        ).start_date;
-    } else {
-        options.data.end_date = tasks.value.find(
-            (task) => task.id === task_id
-        ).end_date;
-    }
-    const task = tasks.value.find((task) => task.id === task_id);
-    axios
-        .request(options)
-        .then((response) => {
-            task = response.data.task;
-        })
-        .catch((error) => {
-            console.error(error);
-        });
-};
 
 const isLocked = (date) => {
-    const lockEntry = props.locks.find((lock) =>
-        dayjs(lock.date).isSame(dayjs(date), "month")
-    );
-    return lockEntry ? lockEntry.is_locked : false;
+    return  false;
 };
 
 const sumActual = (activities) => {
-    return _.sumBy(activities, (activity) =>
-        isLocked(activity.date) ? activity.value : 0
-    );
+    return _.sumBy(activities, "value");
+        // isLocked(activity.date) ? activity.value : 0
+    
 };
 
 const sumTotal = (activities) => {
@@ -103,7 +65,7 @@ const sumTotal = (activities) => {
         <td>
             {{ task.unit }}
         </td>
-        <td  v-if="hasRole(['Admin', 'Super Admin'], auth.user)">
+        <!-- <td  v-if="hasRole(['Admin', 'Super Admin'], auth.user)">
             <input
                 type="date"
                 class="input-primary input"
@@ -122,7 +84,7 @@ const sumTotal = (activities) => {
                 :min="min < task.start_date ? task.start_date : min"
                 :max="max"
             />
-        </td>
+        </td> -->
         <td>
             {{ task.quantity }}
         </td>

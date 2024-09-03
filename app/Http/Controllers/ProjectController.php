@@ -69,11 +69,15 @@ class ProjectController extends Controller
      */
     public function store(StoreProjectRequest $request)
     {
+        // $this->authorize('create', Project::class);
+        // dd($request->validated());
+        $validatedData = $request->validated();
+
         $project = Project::make($request->validated());
         $project->created_by = auth()->id();
         $project->save();
-
-        return redirect()->route('projects.index');
+    
+        return redirect()->route('projects.index')->with('success', 'Project created successfully.');
     }
 
     /**
@@ -81,6 +85,7 @@ class ProjectController extends Controller
      */
     public function show(Project $project)
     {
+        $this->authorize('view', $project);
         return Inertia::render('Projects/Show', [
             'project' => $project->load('groups.tasks.activities', 'locks', 'users', 'teams'),
             'users' => User::all(),

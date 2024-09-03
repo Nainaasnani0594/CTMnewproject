@@ -9,6 +9,40 @@ import { reactive } from "vue";
 import { router } from "@inertiajs/vue3";
 import { useForm } from "@inertiajs/vue3";
 
+// List of countries
+const countries = [
+"Afghanistan", "Albania", "Algeria", "Andorra", "Angola", "Argentina", "India",
+    "United States", "Uruguay", "Uzbekistan", "Vanuatu", "Vatican City",
+    "Venezuela", "Vietnam", "Yemen", "Zambia", "Zimbabwe"];
+
+  // List of currencies
+  const currencies = [
+    { value: 'AFN', label: 'AFN' },
+    { value: 'ALL', label: 'ALL' },
+    { value: 'DZD', label: 'DZD' },
+    { value: 'EUR', label: 'EUR' },
+    { value: 'AOA', label: 'AOA' },
+    { value: 'ARS', label: 'ARS' },
+    { value: 'INR', label: 'INR'},
+    { value: 'USD', label: 'USD'},
+    { value: 'UYU', label: 'UYU' },
+    { value: 'UZS', label: 'UZS' },
+    { value: 'VUV', label: 'VUV' },
+    { value: 'EUR', label: 'EUR' },
+    { value: 'VES', label: 'VES' },
+    { value: 'VND', label: 'VND' },
+    { value: 'YER', label: 'YER' },
+    { value: 'ZMW', label: 'ZMW' },
+    { value: 'ZWL', label: 'ZWL' },
+
+    // Add more currencies as needed
+];
+const billing_type = [
+    { value: 'Activity Based', label: 'Activity Based' },
+    { value: 'Monthly', label: 'Monthly' },
+    { value: 'Milestone', label: 'Milestone' },
+    { value: 'Monthly & Milestone', label: 'Monthly & Milestone' },
+];
 const form = useForm({
     sponsor_name: "",
     project_name: "",
@@ -64,15 +98,27 @@ const form = useForm({
                                 @update:modelValue="form.project_name = $event"
                             />
 
-                            <CustomInput
-                                _id="contract_holder_country"
-                                _label="Contract Holder Country"
+
+                            <!-- Contract Holder Country Dropdown -->
+                        <div class="col-span-1">
+                            <label for="contract_holder_country" class="block text-sm font-medium text-gray-500 line-height:1.25rem">
+                                Contract Holder Country
+                            </label>
+                            <select
+                                id="contract_holder_country"
                                 v-model="form.contract_holder_country"
-                                :error="form.errors.contract_holder_country"
-                                @update:modelValue="
-                                    form.contract_holder_country = $event
-                                "
-                            />
+                                class= "input input-bordered input-primary w-full max-w-xs mt-4"
+                                    >
+                                <option disabled value="">Select Country</option>
+                                <option v-for="country in countries" :key="country" :value="country">
+                                    {{ country }}
+                                </option>
+                            </select>
+                            <div v-if="form.errors.contract_holder_country" class="text-red-600 text-sm mt-1">
+                                {{ form.errors.contract_holder_country }}
+                            </div>
+                        </div>
+
                             <CustomInput
                                 _id="project_manager"
                                 _label="Project Manager"
@@ -82,13 +128,29 @@ const form = useForm({
                                     form.project_manager = $event
                                 "
                             />
-                            <CustomInput
-                                _id="currency"
-                                _label="Currency"
-                                v-model="form.currency"
-                                :error="form.errors.currency"
-                                @update:modelValue="form.currency = $event"
-                            />
+
+
+                            <!-- Currency Dropdown -->
+                            <div class="col-span-1">
+                                <label for="currency" class="block text-sm font-medium text-gray-500 line-height:1.25rem">
+                                    Currency
+                                </label>
+                                <select
+                                    id="currency"
+                                    v-model="form.currency"
+                                    class="input input-bordered input-primary w-full max-w-xs mt-4"
+                                >
+                                    <option disabled value="">Select Currency</option>
+                                    <option v-for="currency in currencies" :key="currency.value" :value="currency.value">
+                                        {{ currency.label }}
+                                    </option>
+                                </select>
+                                <div v-if="form.errors.currency" class="text-red-600 text-sm mt-1">
+                                    {{ form.errors.currency }}
+                                </div>
+                            </div>
+
+
                             <CustomInput
                                 _id="contract_value"
                                 _label="Contract Value"
@@ -111,13 +173,26 @@ const form = useForm({
                                 <option value="1">Yes</option>
                                 <option value="0">No</option>
                             </CustomSelect>
-                            <CustomInput
-                                _id="billing_type"
-                                _label="Billing Type"
-                                v-model="form.billing_type"
-                                :error="form.errors.billing_type"
-                                @update:modelValue="form.billing_type = $event"
-                            />
+                            <div class="col-span-1">
+                                <label for="billing_type" class="block text-sm font-medium text-gray-500">
+                                    Billing Type
+                                </label>
+                                <select
+                                    id="billing_type"
+                                    v-model="form.billing_type"
+                                    class="input input-bordered input-primary w-full max-w-xs mt-4"
+                                >
+                                    <option disabled value="">Select Billing Type</option>
+                                    <option v-for="type in billing_type" :key="type.value" :value="type.value">
+                                        {{ type.label }}
+                                    </option>
+                                </select>
+                                <div v-if="form.errors.billing_type" class="text-red-600 text-sm mt-1">
+                                    {{ form.errors.billing_type }}
+                                </div>
+                            </div>
+
+
                             <CustomInput
                                 _id="activity_start_date"
                                 _label="Activity Start Date"

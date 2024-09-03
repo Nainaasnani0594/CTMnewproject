@@ -13,7 +13,7 @@ class ProjectPolicy
      */
     public function viewAny(User $user): bool
     {
-        //
+        return $user->hasRole(['Super Admin', 'Admin', 'Manager', 'Executive']);
     }
 
     /**
@@ -21,7 +21,12 @@ class ProjectPolicy
      */
     public function view(User $user, Project $project): bool
     {
-        //
+        if ($user->hasRole(['Super Admin', 'Admin'])) {
+            return true;
+        }
+
+        // Check if the user is assigned to the project directly or through their team
+        return $project->users->contains($user) || $project->teams->flatMap->users->contains($user);
     }
 
     /**
@@ -29,15 +34,21 @@ class ProjectPolicy
      */
     public function create(User $user): bool
     {
-        //
-    }
+        $hasPermission = $user->hasRole(['Super Admin', 'Admin']);
+        \Log::info('User role check for creating project:', ['hasPermission' => $hasPermission]);
+        return $hasPermission;
+        }
 
     /**
      * Determine whether the user can update the model.
      */
     public function update(User $user, Project $project): bool
     {
-        //
+        if ($user->hasRole(['Super Admin', 'Admin'])) {
+            return true;
+        }
+
+        return $project->users->contains($user) || $project->teams->flatMap->users->contains($user);
     }
 
     /**
@@ -45,7 +56,11 @@ class ProjectPolicy
      */
     public function delete(User $user, Project $project): bool
     {
-        //
+        if ($user->hasRole(['Super Admin', 'Admin'])) {
+            return true;
+        }
+
+        return $project->users->contains($user) || $project->teams->flatMap->users->contains($user);
     }
 
     /**
@@ -53,7 +68,7 @@ class ProjectPolicy
      */
     public function restore(User $user, Project $project): bool
     {
-        //
+        return $this->view($user, $project);
     }
 
     /**
@@ -61,6 +76,6 @@ class ProjectPolicy
      */
     public function forceDelete(User $user, Project $project): bool
     {
-        //
+        return $this->delete($user, $project);
     }
 }

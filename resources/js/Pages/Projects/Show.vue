@@ -109,20 +109,20 @@ const refresh = () => {
                     {{ project.project_name }}
                 </h2>
                 <button
-                    @click="
-                        project_details_is_visible = !project_details_is_visible
-                    "
-                    class="btn btn-primary"
-                >
-                    {{ project_details_is_visible ? "Hide" : "Show" }} Details
-                </button>
+    @click="
+        project_details_is_visible = !project_details_is_visible
+    "
+    class="bg-gray-400 text-white hover:bg-gray-700 font-bold py-2 px-4 rounded"
+>
+    {{ project_details_is_visible ? "Hide" : "Show" }} Details
+</button>
                 <button
                     v-if="hasRole(['Admin', 'Super Admin'], props.auth.user)"
                     @click="
                         creation_form_is_visible = !creation_form_is_visible
                     "
-                    class="btn btn-primary"
-                >
+                class="bg-gray-400 text-white hover:bg-gray-700 font-bold py-2 px-4 rounded"
+    >
                     {{ creation_form_is_visible ? "Hide" : "Show" }}
                     Creation Form
                 </button>
@@ -136,30 +136,30 @@ const refresh = () => {
                 <button
                     v-if="hasRole(['Admin', 'Super Admin'], props.auth.user)"
                     @click="$refs.file_input.click()"
-                    class="btn btn-primary"
-                >
+                    class="bg-gray-400 text-white hover:bg-gray-700 font-bold py-2 px-4 rounded"
+                    >
                     Import
                 </button>
                 <a
                     target="_blank"
                     :href="route('project_export', project.id)"
-                    class="btn btn-primary"
+                    class="bg-gray-400 text-white hover:bg-gray-700 font-bold py-2 px-4 rounded"
                     >Export</a
                 >
                 <a
                     v-if="hasRole(['Admin', 'Super Admin'], props.auth.user)"
                     target="_blank"
                     :href="route('sample_export', project.id)"
-                    class="btn btn-secondary"
+                    class="bg-gray-400 text-white hover:bg-gray-700 font-bold py-2 px-4 rounded"
                     >Sample</a
                 >
             </div>
         </template>
 
-        <div class="py-12">
+        <div class="py-2">
             <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
                 <div v-if="hasRole(['Admin', 'Super Admin'], auth.user)" class="bg-white shadow-sm sm:rounded-lg">
-                    <div class="p-6 text-gray-900">
+                    <div class="p-2 text-gray-900">
                         <h2
                             class="font-semibold text-xl text-gray-800 leading-tight"
                         >
@@ -205,7 +205,7 @@ const refresh = () => {
                 </div>
                 <div
                     v-if="creation_form_is_visible"
-                    class="mt-8 p-6 bg-white overflow-hidden shadow-sm sm:rounded-lg"
+                    class="mt-2 p-6 bg-white overflow-hidden shadow-sm sm:rounded-lg"
                 >
                     <div class="flex justify-between items-center">
                         <h2
@@ -227,7 +227,7 @@ const refresh = () => {
                     </div>
                 </div>
                 <div
-                    class="mt-8 bg-white overflow-hidden shadow-sm sm:rounded-lg"
+                    class="mt-2 bg-white overflow-hidden shadow-sm sm:rounded-lg"
                 >
                     <div class="p-6 text-gray-900">
                         <GroupsList :auth="auth" :project="project" />

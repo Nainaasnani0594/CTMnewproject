@@ -80,7 +80,7 @@ const submit = () => {
         </div>
         <input
             type="submit"
-            class="self-center btn btn-primary max-w-xs w-full"
+            class="bg-gray-400 text-white hover:bg-gray-700 font-bold py-2 px-4 rounded max-w-xs w-full"
             value="Add Task"
         />
     </form>

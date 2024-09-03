@@ -42,7 +42,7 @@ class UserResource extends Resource
                     ->maxLength(255),
                 Forms\Components\TextInput::make('password_confirmation')
                     ->required(fn(string $context): bool => $context === 'create'),
-                Forms\Components\Select::make('roles')->multiple()->relationship('roles', 'name', fn(Builder $query) => $query->whereIn('name', ['Admin', 'Manager', 'Executive']))
+                Forms\Components\Select::make('roles')->multiple()->relationship('roles', 'name')
                     ->preload(),
                 Forms\Components\Select::make('teams')
                     ->multiple()

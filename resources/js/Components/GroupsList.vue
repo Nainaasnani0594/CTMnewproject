@@ -3,6 +3,7 @@ import GroupItem from "./GroupItem.vue";
 import dayjs from "dayjs";
 import { ref, defineProps } from "vue";
 import { hasRole } from "@/util";
+import axios from "axios";
 
 const props = defineProps({
     project: {
@@ -45,8 +46,8 @@ const handleLockChange = (lock) => {
                 <tr>
                     <th>Tasks</th>
                     <th>UNIT</th>
-                    <th v-if="hasRole(['Admin', 'Super Admin'], auth.user)">Start Date</th>
-                    <th v-if="hasRole(['Admin', 'Super Admin'], auth.user)">End Date</th>
+                    <!-- <th v-if="hasRole(['Admin', 'Super Admin'], auth.user)">Start Date</th>
+                    <th v-if="hasRole(['Admin', 'Super Admin'], auth.user)">End Date</th> -->
                     <th>No. of Units</th>
                     <th>Unit Price</th>
                     <th>Total Task Value</th>
@@ -70,22 +71,24 @@ const handleLockChange = (lock) => {
                     <th></th>
                     <th></th>
                     <th></th>
-                    <th v-if="hasRole(['Admin', 'Super Admin'], auth.user)"></th>
-                    <th v-if="hasRole(['Admin', 'Super Admin'], auth.user)"></th>
+                    <!-- <th v-if="hasRole(['Admin', 'Super Admin'], auth.user)"></th>
+                    <th v-if="hasRole(['Admin', 'Super Admin'], auth.user)"></th> -->
                     <td
-                        width="56px"
-                        class="px-0.5 text-xs"
                         v-for="(lock, index) in locks"
                         :key="lock.date"
                         :class="{
                             'tracking-[2px]': locks[index].is_locked,
                         }"
+                         width="56px"
+                        class="px-0.5 text-xs"
+
                     >
                         <span>{{ locks[index].is_locked ? "Actual" : "Forecast" }}</span>
                         <br>
                         <input
-                            class="checkbox checkbox-primary"
-                            type="checkbox"
+                            v-if="hasRole(['Admin', 'Super Admin', 'Manager'], auth.user)"
+                             class="custom-checkbox"
+                             type="checkbox"
                             v-model="locks[index].is_locked"
                             @change="handleLockChange(lock)"
                         />
@@ -109,3 +112,15 @@ const handleLockChange = (lock) => {
         </table>
     </div>
 </template>
+<style scoped>
+.custom-checkbox {
+    width: 15px;
+    height: 15px;
+    border: 2px solid #919595; 
+    border-radius: 3px; 
+}
+
+.custom-checkbox:checked {
+    border-color: #919595; 
+}
+</style>
