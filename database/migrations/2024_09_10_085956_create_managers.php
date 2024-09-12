@@ -11,11 +11,13 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('roles', function (Blueprint $table) {
+        Schema::create('managers', function (Blueprint $table) {
             $table->id();
             $table->string('name');
-            $table->string('guard_name')->default('web'); // Set default value here
+            $table->string('email')->unique();
+            $table->string('password');
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 
@@ -24,8 +26,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('roles');
+        Schema::dropIfExists('managers');
     }
 };
-
-

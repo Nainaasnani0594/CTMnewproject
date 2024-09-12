@@ -1,7 +1,7 @@
 <script setup>
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout.vue";
 import { Head, Link, router } from "@inertiajs/vue3";
-import { hasRole } from "@/util";
+import { hasRole, to_roman_numerical } from "@/util";
 
 defineProps({
     projects: {
@@ -14,7 +14,6 @@ defineProps({
     },
 });
 
-import { to_roman_numerical } from "@/util";
 const deleteProject = (id) => {
     if (confirm("Are you sure you want to delete this project?")) {
         router.delete(route("projects.destroy", id));
@@ -66,7 +65,7 @@ const deleteProject = (id) => {
                                 </thead>
                                 <tbody>
                                     <!-- row 1 -->
-                                    <tr v-for="(project, index) in projects">
+                                    <tr v-for="(project, index) in projects" :key="project.id">
                                         <th>{{ index + 1 }}</th>
                                         <td>{{ project.sponsor_name }}</td>
                                         <td>{{ project.project_name }}</td>
@@ -101,12 +100,12 @@ const deleteProject = (id) => {
                                                 class="btn btn-sm btn-primary"
                                                 >View</Link
                                             >
+                                     <!-- Only show the Delete button if the user has the role of Admin or Super Admin -->
+
                                             <button
-                                                @click="
-                                                    deleteProject(project.id)
-                                                "
-                                                class="btn btn-sm btn-error"
-                                            >
+                                             v-if="hasRole(['Admin', 'Super Admin'], auth.user)"
+                                                @click="deleteProject(project.id)"
+                                                class="btn btn-sm btn-error">
                                                 Delete
                                             </button>
                                         </td>

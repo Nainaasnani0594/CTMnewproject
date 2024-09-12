@@ -11,21 +11,19 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('roles', function (Blueprint $table) {
+        Schema::create('manager_team', function (Blueprint $table) {
             $table->id();
-            $table->string('name');
-            $table->string('guard_name')->default('web'); // Set default value here
+            $table->foreignId('manager_id')->constrained()->onDelete('cascade');
+            $table->foreignId('team_id')->constrained()->onDelete('cascade');
             $table->timestamps();
         });
-    }
+            }
 
     /**
      * Reverse the migrations.
      */
     public function down(): void
     {
-        Schema::dropIfExists('roles');
+        Schema::dropIfExists('manager_team');
     }
 };
-
-

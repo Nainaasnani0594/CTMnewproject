@@ -41,8 +41,12 @@ class UserResource extends Resource
                     ->required(fn(string $context): bool => $context === 'create')
                     ->maxLength(255),
                 Forms\Components\TextInput::make('password_confirmation')
-                    ->required(fn(string $context): bool => $context === 'create'),
-                Forms\Components\Select::make('roles')->multiple()->relationship('roles', 'name')
+                ->password()
+                ->same('password')
+                ->required(fn(string $context): bool => $context === 'create'),
+                Forms\Components\Select::make('roles')
+                ->multiple()->relationship('roles', 'name', fn(Builder $query) 
+                => $query->whereIn('name', ['Admin', 'Manager', 'Executive']))
                     ->preload(),
                 Forms\Components\Select::make('teams')
                     ->multiple()
@@ -74,6 +78,7 @@ class UserResource extends Resource
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
+                Tables\Actions\DeleteAction::make(),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([

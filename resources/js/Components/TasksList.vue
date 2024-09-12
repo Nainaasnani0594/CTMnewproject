@@ -29,7 +29,6 @@ watch(
     }
 );
 const on_activity_updated = (updated_activity) => {
-    // update the value of activity using updated_activity in props.tasks
     const task_index = tasks.value.findIndex(
         (task) => task.id === updated_activity.task_id
     );
@@ -41,16 +40,28 @@ const on_activity_updated = (updated_activity) => {
     );
 };
 
-
 const isLocked = (date) => {
-    return  false;
+    const lockEntry = props.locks.find((lock) =>
+        dayjs(lock.date).isSame(dayjs(date), "month")
+    );
+    return lockEntry ? lockEntry.is_locked : false;
 };
+
+
+// const isLocked = (date) => {
+//     return  false;
+// };
 
 const sumActual = (activities) => {
-    return _.sumBy(activities, "value");
-        // isLocked(activity.date) ? activity.value : 0
-    
+    return _.sumBy(activities, (activity) =>
+        isLocked(activity.date) ? activity.value : 0
+    );
 };
+
+// const sumActual = (activities) => {
+//     return _.sumBy(activities, "value");
+    
+// };
 
 const sumTotal = (activities) => {
     return _.sumBy(activities, "value");
@@ -65,26 +76,6 @@ const sumTotal = (activities) => {
         <td>
             {{ task.unit }}
         </td>
-        <!-- <td  v-if="hasRole(['Admin', 'Super Admin'], auth.user)">
-            <input
-                type="date"
-                class="input-primary input"
-                v-model="task.start_date"
-                @change="updated_date(task.id, 'start')"
-                :min="min"
-                :max="max"
-            />
-        </td>
-        <td  v-if="hasRole(['Admin', 'Super Admin'], auth.user)">
-            <input
-                type="date"
-                class="input-primary input"
-                v-model="task.end_date"
-                @change="updated_date(task.id, 'end')"
-                :min="min < task.start_date ? task.start_date : min"
-                :max="max"
-            />
-        </td> -->
         <td>
             {{ task.quantity }}
         </td>
@@ -103,7 +94,9 @@ const sumTotal = (activities) => {
             {{ sumActual(task.activities) }}
         </td>
         <td>
-            {{ sumTotal(task.activities) }}
+            {{task.quantity}}
+            <!-- {{ sumTotal(task.activities) }} -->
+
         </td>
         <td>
             {{

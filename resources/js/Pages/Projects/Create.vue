@@ -1,13 +1,15 @@
 <script setup>
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout.vue";
 import { Head } from "@inertiajs/vue3";
-
+import { ref, onMounted } from 'vue';
 import CustomInput from "@/Components/CustomInput.vue";
 import CustomSelect from "@/Components/CustomSelect.vue";
 
 import { reactive } from "vue";
 import { router } from "@inertiajs/vue3";
 import { useForm } from "@inertiajs/vue3";
+import axios from 'axios'; // Ensure axios is installed
+const managers = ref([]);
 
 // List of countries
 const countries = [
@@ -63,6 +65,16 @@ const form = useForm({
     therapeutic_area: "",
     sponsor_country: "",
 });
+
+onMounted(async () => {
+  try {
+    const response = await axios.get('/managers');
+    managers.value = response.data; // Populate the managers ref with data
+  } catch (error) {
+    console.error('Failed to fetch managers:', error);
+  }
+});
+
 </script>
 
 <template>
@@ -129,6 +141,26 @@ const form = useForm({
                                 "
                             />
 
+                <!-- Project Manager Dropdown -->
+              <!-- <div class="col-span-1">
+                <label for="project_manager" class="block text-sm font-medium text-gray-500">
+                  Project Manager
+                </label>
+                <select
+                  id="project_manager"
+                  v-model="form.project_manager"
+                  class="input input-bordered input-primary w-full max-w-xs mt-4"
+                >
+                  <option disabled value="">Select Manager</option>
+                  <option v-for="manager in managers" :key="manager.id" :value="manager.id">
+                    {{ manager.name }}
+                  </option>
+                </select>
+                <div v-if="form.errors.project_manager" class="text-red-600 text-sm mt-1">
+                  {{ form.errors.project_manager }}
+                </div>
+              </div> -->
+
 
                             <!-- Currency Dropdown -->
                             <div class="col-span-1">
@@ -149,27 +181,20 @@ const form = useForm({
                                     {{ form.errors.currency }}
                                 </div>
                             </div>
-
-
                             <CustomInput
                                 _id="contract_value"
                                 _label="Contract Value"
                                 v-model="form.contract_value"
                                 :error="form.errors.contract_value"
-                                @update:modelValue="
-                                    form.contract_value = $event
-                                "
-                                _type="number"
-                            />
+                                @update:modelValue="form.contract_value = $event"
+                                _type="number"/>
                             <CustomSelect
                                 _id="contract_signed"
                                 _label="Contract Signed"
                                 v-model="form.contract_signed"
                                 :error="form.errors.contract_signed"
                                 @update:modelValue="
-                                    form.contract_signed = $event
-                                "
-                            >
+                                    form.contract_signed = $event">
                                 <option value="1">Yes</option>
                                 <option value="0">No</option>
                             </CustomSelect>
@@ -191,8 +216,6 @@ const form = useForm({
                                     {{ form.errors.billing_type }}
                                 </div>
                             </div>
-
-
                             <CustomInput
                                 _id="activity_start_date"
                                 _label="Activity Start Date"
@@ -266,7 +289,8 @@ const form = useForm({
                                 v-model="form.phase"
                                 :error="form.errors.phase"
                                 @update:modelValue="form.phase = $event"
-                                _type="number"
+                                _type="text"
+                                :maxLength="4"
                             />
                             <CustomInput
                                 _id="therapeutic_area"
@@ -286,17 +310,21 @@ const form = useForm({
                                     form.sponsor_country = $event
                                 "
                             />
-                            <button
-                                type="submit"
-                                class="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-                                :disabled="form.processing"
-                            >
-                                Create Project
-                            </button>
-                        </form>
+             <!-- Submit Button -->
+             <div class="col-span-3">
+                <button
+                  type="submit"
+                  class="btn btn-primary w-full mt-4"
+                  :disabled="form.processing"
+                >
+                  Create Project
+                </button>
+              </div>
+             </form>
                     </div>
                 </div>
             </div>
         </div>
     </AuthenticatedLayout>
 </template>
+

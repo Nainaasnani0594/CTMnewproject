@@ -10,7 +10,7 @@
         "@tailwindcss/forms": "^0.5.3",
         "@vitejs/plugin-vue": "^5.0.0",
         "autoprefixer": "^10.4.12",
-        "axios": "^1.6.4",
+        "axios": "^1.7.7",
         "daisyui": "^4.12.10",
         "laravel-vite-plugin": "^1.0.0",
         "postcss": "^8.4.31",
@@ -19,6 +19,8 @@
         "vue": "^3.4.0"
     },
     "dependencies": {
+        "@vuelidate/core": "^2.0.3",
+        "@vuelidate/validators": "^2.0.4",
         "dayjs": "^1.11.11",
         "lodash": "^4.17.21",
         "vue-multiselect": "^3.0.0"

@@ -3,11 +3,10 @@ import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout.vue";
 import AddGroupForm from "@/Components/AddGroupForm.vue";
 import AddTaskForm from "@/Components/AddTaskForm.vue";
 import { Head } from "@inertiajs/vue3";
-import { ref, defineProps } from "vue";
+import { ref, defineProps, watch } from "vue";
 import ProjectDetails from "@/Components/ProjectDetails.vue";
 import GroupsList from "@/Components/GroupsList.vue";
 import axios from "axios";
-import { watch } from "vue";
 import Multiselect from "vue-multiselect";
 import { hasRole } from "@/util";
 
@@ -33,6 +32,11 @@ const props = defineProps({
 const project = ref(props.project);
 const selected_users = ref(project.value.users);
 const selected_teams = ref(project.value.teams);
+const creation_form_is_visible = ref(false);
+const project_details_is_visible = ref(false);
+const file_input = ref(null);
+const errorMessage = ref(null);
+const duplicates = ref([]);
 
 const updatedAssignments = (type) => {
     const options = {
@@ -59,30 +63,28 @@ const updatedAssignments = (type) => {
             console.error(error);
         });
 };
-
 console.log(props.auth.user);
-
-const creation_form_is_visible = ref(false);
-const project_details_is_visible = ref(false);
-const file_input = ref(null);
 const import_file = () => {
-    const options = {
-        method: "POST",
-        headers: { "Content-Type": "multipart/form-data" },
-        url: route("import", project.value.id),
-        data: {
-            file: file_input.value.files[0],
+    const formData = new FormData();
+    formData.append("file", file_input.value.files[0]);
+    axios.post(route("import", project.value.id), formData, {
+        headers: {
+            "Content-Type": "multipart/form-data",
         },
-    };
+    })
+    .then((response) => {
+        project.value = response.data.project;
+        selected_users.value = response.data.project.users;
+        selected_teams.value = response.data.project.teams;
+        errorMessage.value = null; 
+        duplicates.value = response.data.duplicates; 
+        console.log('Response data:', response.data);
+        console.log('Duplicates:', response.data.duplicates);
 
-    axios
-        .request(options)
-        .then((response) => {
-            project.value = response.data.project;
-        })
-        .catch((error) => {
-            console.error(error);
-        });
+    })
+    .catch((error) => {
+        errorMessage.value = error.response?.data?.error || "An unexpected error occurred.";
+    });
 };
 
 watch(
@@ -104,6 +106,23 @@ const refresh = () => {
 
     <AuthenticatedLayout>
         <template #header>
+            <div v-if="errorMessage" class="bg-red-500 text-white p-4 rounded">
+                {{ errorMessage }}
+            </div>
+    <div v-if="duplicates.length" class="fixed inset-0 flex items-center justify-center bg-gray-900 bg-opacity-50">
+        <div class="bg-white p-6 rounded shadow-lg w-11/12 max-w-lg">
+            <h3 class="font-semibold text-xl text-gray-800">Duplicate Entries</h3>
+            <ul>
+            <li v-for="task in duplicates" :key="task" class="text-gray-700">{{ task }}</li>
+        </ul>
+        <button
+            @click="duplicates = []"
+            class="mt-4 bg-gray-400 text-white hover:bg-gray-700 font-bold py-2 px-4 rounded"
+          >
+            Close
+          </button>
+    </div>
+    </div>
             <div class="flex justify-between gap-4 items-center">
                 <h2 class="font-semibold text-xl text-gray-800 leading-tight">
                     {{ project.project_name }}
@@ -151,13 +170,17 @@ const refresh = () => {
                     target="_blank"
                     :href="route('sample_export', project.id)"
                     class="bg-gray-400 text-white hover:bg-gray-700 font-bold py-2 px-4 rounded"
-                    >Sample</a
-                >
+                    >Sample</a>
             </div>
         </template>
 
         <div class="py-2">
             <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
+                                <!-- Error message display -->
+                                <div v-if="errorMessage" class="bg-red-500 text-white p-4 rounded">
+                    {{ errorMessage }}
+                </div>
+
                 <div v-if="hasRole(['Admin', 'Super Admin'], auth.user)" class="bg-white shadow-sm sm:rounded-lg">
                     <div class="p-2 text-gray-900">
                         <h2
@@ -235,5 +258,6 @@ const refresh = () => {
                 </div>
             </div>
         </div>
+
     </AuthenticatedLayout>
 </template>

@@ -11,11 +11,8 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('roles', function (Blueprint $table) {
-            $table->id();
-            $table->string('name');
-            $table->string('guard_name')->default('web'); // Set default value here
-            $table->timestamps();
+        Schema::table('managers', function (Blueprint $table) {
+            $table->string('status')->nullable(); 
         });
     }
 
@@ -24,8 +21,8 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('roles');
+        Schema::table('managers', function (Blueprint $table) {
+            $table->dropColumn('status');
+        });
     }
 };
-
-

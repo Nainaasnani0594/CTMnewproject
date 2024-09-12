@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Project;
+use App\Models\Manager;
 use App\Http\Requests\StoreProjectRequest;
 use App\Http\Requests\UpdateProjectRequest;
 use App\Models\Team;
@@ -56,33 +57,25 @@ class ProjectController extends Controller
         ]);
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
     public function create()
     {
         return Inertia::render('Projects/Create');
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
     public function store(StoreProjectRequest $request)
     {
-        // $this->authorize('create', Project::class);
-        // dd($request->validated());
         $validatedData = $request->validated();
 
         $project = Project::make($request->validated());
         $project->created_by = auth()->id();
         $project->save();
-    
+    if ($request->has('project_manager')) {
+        $manager = User::find($request->project_manager);
+        $project->users()->attach($manager);
+    }
         return redirect()->route('projects.index')->with('success', 'Project created successfully.');
     }
 
-    /**
-     * Display the specified resource.
-     */
     public function show(Project $project)
     {
         $this->authorize('view', $project);
@@ -93,29 +86,28 @@ class ProjectController extends Controller
         ]);
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
     public function edit(Project $project)
     {
         //
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
     public function update(UpdateProjectRequest $request, Project $project)
     {
         //
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
     public function destroy(Project $project)
     {
         $project->delete();
 
         return redirect()->route('projects.index');
+    }
+    public function import_excel()
+    {
+        return view('import_excel');
+    }
+    public function import_excel_post(Request $request)
+    {
+        dd($request->all());
     }
 }

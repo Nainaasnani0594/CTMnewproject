@@ -40,6 +40,10 @@ return [
             'driver' => 'session',
             'provider' => 'users',
         ],
+        'manager' => [
+            'driver' => 'session',
+            'provider' => 'managers',
+        ],
     ],
 
     /*
@@ -65,11 +69,10 @@ return [
             'model' => App\Models\User::class,
         ],
 
-        // 'users' => [
-        //     'driver' => 'database',
-        //     'table' => 'users',
-        // ],
-    ],
+            'managers' => [
+            'driver' => 'eloquent',
+            'model' => App\Models\Manager::class,
+        ],    ],
 
     /*
     |--------------------------------------------------------------------------
@@ -97,6 +100,13 @@ return [
             'expire' => 60,
             'throttle' => 60,
         ],
+        'managers' => [
+            'provider' => 'managers',
+            'table' => 'password_reset_tokens', // Ensure this table exists or create a new one if necessary
+            'expire' => 60,
+            'throttle' => 60,
+        ],
+
     ],
 
     /*
