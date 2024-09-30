@@ -4,7 +4,6 @@ import { defineProps, watch, ref } from "vue";
 import dayjs from "dayjs";
 import _ from "lodash";
 import { hasRole } from "@/util";
-
 const props = defineProps({
     tasks: {
         type: Array,
@@ -19,9 +18,7 @@ const props = defineProps({
         required: true,
     },
 });
-
 const tasks = ref(props.tasks);
-
 watch(
     () => props.tasks,
     (_) => {
@@ -39,35 +36,21 @@ const on_activity_updated = (updated_activity) => {
         updated_activity.value
     );
 };
-
 const isLocked = (date) => {
     const lockEntry = props.locks.find((lock) =>
         dayjs(lock.date).isSame(dayjs(date), "month")
     );
     return lockEntry ? lockEntry.is_locked : false;
 };
-
-
-// const isLocked = (date) => {
-//     return  false;
-// };
-
 const sumActual = (activities) => {
     return _.sumBy(activities, (activity) =>
         isLocked(activity.date) ? activity.value : 0
     );
 };
-
-// const sumActual = (activities) => {
-//     return _.sumBy(activities, "value");
-    
-// };
-
 const sumTotal = (activities) => {
     return _.sumBy(activities, "value");
 };
 </script>
-
 <template>
     <tr v-for="task in tasks" :key="task.id">
         <th>
@@ -88,15 +71,12 @@ const sumTotal = (activities) => {
         <ActivitiesList
             @updated="on_activity_updated($event)"
             :task="task"
-            :locks="locks"
-        />
+            :locks="locks"/>
         <td>
             {{ sumActual(task.activities) }}
         </td>
         <td>
             {{task.quantity}}
-            <!-- {{ sumTotal(task.activities) }} -->
-
         </td>
         <td>
             {{

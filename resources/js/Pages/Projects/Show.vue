@@ -9,7 +9,6 @@ import GroupsList from "@/Components/GroupsList.vue";
 import axios from "axios";
 import Multiselect from "vue-multiselect";
 import { hasRole } from "@/util";
-
 const props = defineProps({
     project: {
         type: Object,
@@ -28,7 +27,6 @@ const props = defineProps({
         required: true,
     },
 });
-
 const project = ref(props.project);
 const selected_users = ref(project.value.users);
 const selected_teams = ref(project.value.teams);
@@ -37,7 +35,6 @@ const project_details_is_visible = ref(false);
 const file_input = ref(null);
 const errorMessage = ref(null);
 const duplicates = ref([]);
-
 const updatedAssignments = (type) => {
     const options = {
         method: "POST",
@@ -51,9 +48,7 @@ const updatedAssignments = (type) => {
                     : selected_teams.value.map((t) => t.id),
         },
     };
-
     console.log(options);
-
     axios
         .request(options)
         .then((response) => {
@@ -80,13 +75,11 @@ const import_file = () => {
         duplicates.value = response.data.duplicates; 
         console.log('Response data:', response.data);
         console.log('Duplicates:', response.data.duplicates);
-
     })
     .catch((error) => {
         errorMessage.value = error.response?.data?.error || "An unexpected error occurred.";
     });
 };
-
 watch(
     () => props.project,
     (_) => {
@@ -94,16 +87,13 @@ watch(
     },
     { deep: true }
 );
-
 const refresh = () => {
     console.log("refreshing");
     project.value = props.project;
 };
 </script>
-
 <template>
     <Head title="Dashboard" />
-
     <AuthenticatedLayout>
         <template #header>
             <div v-if="errorMessage" class="bg-red-500 text-white p-4 rounded">
@@ -118,7 +108,7 @@ const refresh = () => {
         <button
             @click="duplicates = []"
             class="mt-4 bg-gray-400 text-white hover:bg-gray-700 font-bold py-2 px-4 rounded"
-          >
+>
             Close
           </button>
     </div>
@@ -127,21 +117,16 @@ const refresh = () => {
                 <h2 class="font-semibold text-xl text-gray-800 leading-tight">
                     {{ project.project_name }}
                 </h2>
-                <button
-    @click="
-        project_details_is_visible = !project_details_is_visible
-    "
-    class="bg-gray-400 text-white hover:bg-gray-700 font-bold py-2 px-4 rounded"
->
+                <button @click="
+        project_details_is_visible = !project_details_is_visible"
+    class="bg-gray-400 text-white hover:bg-gray-700 font-bold py-2 px-4 rounded">
     {{ project_details_is_visible ? "Hide" : "Show" }} Details
 </button>
                 <button
                     v-if="hasRole(['Admin', 'Super Admin'], props.auth.user)"
                     @click="
-                        creation_form_is_visible = !creation_form_is_visible
-                    "
-                class="bg-gray-400 text-white hover:bg-gray-700 font-bold py-2 px-4 rounded"
-    >
+                        creation_form_is_visible = !creation_form_is_visible"
+                class="bg-gray-400 text-white hover:bg-gray-700 font-bold py-2 px-4 rounded">
                     {{ creation_form_is_visible ? "Hide" : "Show" }}
                     Creation Form
                 </button>
@@ -150,47 +135,35 @@ const refresh = () => {
                     accept=".csv,.xlsx,.xls"
                     class="hidden"
                     ref="file_input"
-                    @change="import_file"
-                />
+                    @change="import_file"/>
                 <button
                     v-if="hasRole(['Admin', 'Super Admin'], props.auth.user)"
                     @click="$refs.file_input.click()"
-                    class="bg-gray-400 text-white hover:bg-gray-700 font-bold py-2 px-4 rounded"
-                    >
+                    class="bg-gray-400 text-white hover:bg-gray-700 font-bold py-2 px-4 rounded">
                     Import
                 </button>
-                <a
-                    target="_blank"
+                <a target="_blank"
                     :href="route('project_export', project.id)"
-                    class="bg-gray-400 text-white hover:bg-gray-700 font-bold py-2 px-4 rounded"
-                    >Export</a
-                >
-                <a
-                    v-if="hasRole(['Admin', 'Super Admin'], props.auth.user)"
+                    class="bg-gray-400 text-white hover:bg-gray-700 font-bold py-2 px-4 rounded">Export</a>
+                <a v-if="hasRole(['Admin', 'Super Admin'], props.auth.user)"
                     target="_blank"
                     :href="route('sample_export', project.id)"
-                    class="bg-gray-400 text-white hover:bg-gray-700 font-bold py-2 px-4 rounded"
-                    >Sample</a>
+                    class="bg-gray-400 text-white hover:bg-gray-700 font-bold py-2 px-4 rounded">Sample</a>
             </div>
         </template>
-
         <div class="py-2">
             <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-                                <!-- Error message display -->
                                 <div v-if="errorMessage" class="bg-red-500 text-white p-4 rounded">
                     {{ errorMessage }}
                 </div>
-
                 <div v-if="hasRole(['Admin', 'Super Admin'], auth.user)" class="bg-white shadow-sm sm:rounded-lg">
                     <div class="p-2 text-gray-900">
                         <h2
-                            class="font-semibold text-xl text-gray-800 leading-tight"
-                        >
+                            class="font-semibold text-xl text-gray-800 leading-tight">
                             Assign Users and Teams
                         </h2>
                         <div class="flex gap-4 mt-4">
-                            <label class="w-full" for="users"
-                                >Users
+                            <label class="w-full" for="users">Users
                                 <multiselect
                                     v-model="selected_users"
                                     :options="users"
@@ -198,9 +171,8 @@ const refresh = () => {
                                     track-by="id"
                                     :multiple="true"
                                     @update:modelValue="
-                                        updatedAssignments('user')
-                                    "
-                                ></multiselect>
+                                        updatedAssignments('user')"> 
+                            </multiselect>
                             </label>
                             <label class="w-full" for="teams"
                                 >Teams
@@ -220,28 +192,23 @@ const refresh = () => {
                 </div>
                 <div
                     v-if="project_details_is_visible"
-                    class="bg-white overflow-hidden shadow-sm sm:rounded-lg"
-                >
+                    class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
                     <div class="p-6 text-gray-900">
-                        <ProjectDetails :project="project" />
+                        <ProjectDetails :project="project" :role="props.auth.user.role" :isEditable="hasRole(['Admin', 'Super Admin'], props.auth.user)" />
                     </div>
                 </div>
-                <div
-                    v-if="creation_form_is_visible"
-                    class="mt-2 p-6 bg-white overflow-hidden shadow-sm sm:rounded-lg"
-                >
+                <div v-if="creation_form_is_visible"
+                    class="mt-2 p-6 bg-white overflow-hidden shadow-sm sm:rounded-lg">
                     <div class="flex justify-between items-center">
                         <h2
-                            class="font-semibold text-xl text-gray-800 leading-tight"
-                        >
+                            class="font-semibold text-xl text-gray-800 leading-tight">
                             Creation Form
                         </h2>
                     </div>
                     <div class="p-6 text-gray-900">
                         <AddGroupForm
                             :project-id="project.id"
-                            @refresh="refresh"
-                        />
+                            @refresh="refresh"/>
                         <hr />
                         <AddTaskForm
                             @refresh="refresh"
@@ -250,14 +217,12 @@ const refresh = () => {
                     </div>
                 </div>
                 <div
-                    class="mt-2 bg-white overflow-hidden shadow-sm sm:rounded-lg"
-                >
+                    class="mt-2 bg-white overflow-hidden shadow-sm sm:rounded-lg">
                     <div class="p-6 text-gray-900">
                         <GroupsList :auth="auth" :project="project" />
                     </div>
                 </div>
             </div>
         </div>
-
     </AuthenticatedLayout>
 </template>

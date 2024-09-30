@@ -4,20 +4,16 @@ import { Head } from "@inertiajs/vue3";
 import { ref, onMounted } from 'vue';
 import CustomInput from "@/Components/CustomInput.vue";
 import CustomSelect from "@/Components/CustomSelect.vue";
-
 import { reactive } from "vue";
 import { router } from "@inertiajs/vue3";
 import { useForm } from "@inertiajs/vue3";
-import axios from 'axios'; // Ensure axios is installed
+import axios from 'axios'; 
+// import { to_roman_numerical } from "../util.js";
 const managers = ref([]);
-
-// List of countries
 const countries = [
 "Afghanistan", "Albania", "Algeria", "Andorra", "Angola", "Argentina", "India",
     "United States", "Uruguay", "Uzbekistan", "Vanuatu", "Vatican City",
     "Venezuela", "Vietnam", "Yemen", "Zambia", "Zimbabwe"];
-
-  // List of currencies
   const currencies = [
     { value: 'AFN', label: 'AFN' },
     { value: 'ALL', label: 'ALL' },
@@ -36,8 +32,6 @@ const countries = [
     { value: 'YER', label: 'YER' },
     { value: 'ZMW', label: 'ZMW' },
     { value: 'ZWL', label: 'ZWL' },
-
-    // Add more currencies as needed
 ];
 const billing_type = [
     { value: 'Activity Based', label: 'Activity Based' },
@@ -65,53 +59,48 @@ const form = useForm({
     therapeutic_area: "",
     sponsor_country: "",
 });
-
 onMounted(async () => {
+    try {
+        console.log(to_roman_numerical(3));
+        console.log(to_roman_numerical(5)); 
+    } catch (error) {
+        console.error(error.message);
+    }
   try {
     const response = await axios.get('/managers');
-    managers.value = response.data; // Populate the managers ref with data
+    managers.value = response.data; 
   } catch (error) {
     console.error('Failed to fetch managers:', error);
   }
 });
-
 </script>
-
 <template>
     <Head title="Dashboard" />
-
     <AuthenticatedLayout>
         <template #header>
             <h2 class="font-semibold text-xl text-gray-800 leading-tight">
                 Create Project
             </h2>
         </template>
-
         <div class="py-12">
             <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
                 <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
                     <div class="p-6 text-gray-900">
                         <form
                             @submit.prevent="form.post('/projects')"
-                            class="grid grid-cols-3 gap-4"
-                        >
+                            class="grid grid-cols-3 gap-4">
                             <CustomInput
                                 _id="sponsor_name"
                                 _label="Sponsor Name"
                                 v-model="form.sponsor_name"
                                 :error="form.errors.sponsor_name"
-                                @update:modelValue="form.sponsor_name = $event"
-                            />
+                                @update:modelValue="form.sponsor_name = $event"/>
                             <CustomInput
                                 _id="project_name"
                                 _label="Project Name"
                                 v-model="form.project_name"
                                 :error="form.errors.project_name"
-                                @update:modelValue="form.project_name = $event"
-                            />
-
-
-                            <!-- Contract Holder Country Dropdown -->
+                                @update:modelValue="form.project_name = $event"/>
                         <div class="col-span-1">
                             <label for="contract_holder_country" class="block text-sm font-medium text-gray-500 line-height:1.25rem">
                                 Contract Holder Country
@@ -119,8 +108,7 @@ onMounted(async () => {
                             <select
                                 id="contract_holder_country"
                                 v-model="form.contract_holder_country"
-                                class= "input input-bordered input-primary w-full max-w-xs mt-4"
-                                    >
+                                class= "input input-bordered input-primary w-full max-w-xs mt-4">
                                 <option disabled value="">Select Country</option>
                                 <option v-for="country in countries" :key="country" :value="country">
                                     {{ country }}
@@ -130,39 +118,13 @@ onMounted(async () => {
                                 {{ form.errors.contract_holder_country }}
                             </div>
                         </div>
-
                             <CustomInput
                                 _id="project_manager"
                                 _label="Project Manager"
                                 v-model="form.project_manager"
                                 :error="form.errors.project_manager"
                                 @update:modelValue="
-                                    form.project_manager = $event
-                                "
-                            />
-
-                <!-- Project Manager Dropdown -->
-              <!-- <div class="col-span-1">
-                <label for="project_manager" class="block text-sm font-medium text-gray-500">
-                  Project Manager
-                </label>
-                <select
-                  id="project_manager"
-                  v-model="form.project_manager"
-                  class="input input-bordered input-primary w-full max-w-xs mt-4"
-                >
-                  <option disabled value="">Select Manager</option>
-                  <option v-for="manager in managers" :key="manager.id" :value="manager.id">
-                    {{ manager.name }}
-                  </option>
-                </select>
-                <div v-if="form.errors.project_manager" class="text-red-600 text-sm mt-1">
-                  {{ form.errors.project_manager }}
-                </div>
-              </div> -->
-
-
-                            <!-- Currency Dropdown -->
+                                    form.project_manager = $event"/>
                             <div class="col-span-1">
                                 <label for="currency" class="block text-sm font-medium text-gray-500 line-height:1.25rem">
                                     Currency
@@ -205,8 +167,7 @@ onMounted(async () => {
                                 <select
                                     id="billing_type"
                                     v-model="form.billing_type"
-                                    class="input input-bordered input-primary w-full max-w-xs mt-4"
-                                >
+                                    class="input input-bordered input-primary w-full max-w-xs mt-4">
                                     <option disabled value="">Select Billing Type</option>
                                     <option v-for="type in billing_type" :key="type.value" :value="type.value">
                                         {{ type.label }}
@@ -222,67 +183,49 @@ onMounted(async () => {
                                 v-model="form.activity_start_date"
                                 :error="form.errors.activity_start_date"
                                 @update:modelValue="
-                                    form.activity_start_date = $event
-                                "
-                                _type="date"
-                            />
+                                    form.activity_start_date = $event" _type="date"/>
                             <CustomInput
                                 _id="billing_start_date"
                                 _label="Billing Start Date"
                                 v-model="form.billing_start_date"
                                 :error="form.errors.billing_start_date"
                                 @update:modelValue="
-                                    form.billing_start_date = $event
-                                "
-                                _type="date"
-                            />
+                                    form.billing_start_date = $event" _type="date"/>
                             <CustomInput
                                 _id="clinical_duration"
                                 _label="Clinical Duration"
                                 v-model="form.clinical_duration"
                                 :error="form.errors.clinical_duration"
                                 @update:modelValue="
-                                    form.clinical_duration = $event
-                                "
-                                _type="number"
-                            />
+                                    form.clinical_duration = $event" _type="number"/>
                             <CustomInput
                                 _id="study_duration"
                                 _label="Study Duration"
                                 v-model="form.study_duration"
                                 :error="form.errors.study_duration"
                                 @update:modelValue="
-                                    form.study_duration = $event
-                                "
-                                _type="number"
-                            />
+                                    form.study_duration = $event" _type="number"/>
                             <CustomInput
                                 _id="patients"
                                 _label="Patients"
                                 v-model="form.patients"
                                 :error="form.errors.patients"
-                                @update:modelValue="form.patients = $event"
-                                _type="number"
-                            />
+                                @update:modelValue="form.patients = $event" _type="number"/>
                             <CustomInput
                                 _id="sites"
                                 _label="Sites"
                                 v-model="form.sites"
                                 :error="form.errors.sites"
-                                @update:modelValue="form.sites = $event"
-                                _type="number"
-                            />
+                                @update:modelValue="form.sites = $event" _type="number"/>
                             <CustomSelect
                                 _id="status"
                                 _label="Status"
                                 v-model="form.status"
                                 :error="form.errors.status"
-                                @update:modelValue="form.status = $event"
-                            >
+                                @update:modelValue="form.status = $event">
                                 <option value="1">Active</option>
                                 <option value="0">Inactive</option>
                             </CustomSelect>
-
                             <CustomInput
                                 _id="phase"
                                 _label="Phase"
@@ -290,33 +233,27 @@ onMounted(async () => {
                                 :error="form.errors.phase"
                                 @update:modelValue="form.phase = $event"
                                 _type="text"
-                                :maxLength="4"
-                            />
+                                :maxLength="4"/>
                             <CustomInput
                                 _id="therapeutic_area"
                                 _label="Therapeutic Area"
                                 v-model="form.therapeutic_area"
                                 :error="form.errors.therapeutic_area"
                                 @update:modelValue="
-                                    form.therapeutic_area = $event
-                                "
-                            />
+                                    form.therapeutic_area = $event"/>
                             <CustomInput
                                 _id="sponsor_country"
                                 _label="Sponsor Country"
                                 v-model="form.sponsor_country"
                                 :error="form.errors.sponsor_country"
                                 @update:modelValue="
-                                    form.sponsor_country = $event
-                                "
-                            />
+                                 form.sponsor_country = $event"/>
              <!-- Submit Button -->
              <div class="col-span-3">
                 <button
                   type="submit"
                   class="btn btn-primary w-full mt-4"
-                  :disabled="form.processing"
-                >
+                  :disabled="form.processing">
                   Create Project
                 </button>
               </div>

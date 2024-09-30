@@ -1,7 +1,5 @@
 <?php
-
 namespace App\Http\Controllers;
-
 use App\Models\Project;
 use App\Models\Manager;
 use App\Http\Requests\StoreProjectRequest;
@@ -9,63 +7,85 @@ use App\Http\Requests\UpdateProjectRequest;
 use App\Models\Team;
 use App\Models\User;
 use Inertia\Inertia;
-
+use Illuminate\Http\Request; // <-- Add this line
 class ProjectController extends Controller
 {
-    /**
-     * Display a listing of projects based on user role and permissions.
-     *
-     * This function retrieves and returns a list of projects based on the authenticated user's role:
-     * - Super Admin and Admin roles can see all projects.
-     * - Manager and Executive roles can see projects they are assigned to directly or through their team.
-     * - Other roles (e.g., regular users) will see an empty list.
-     *
-     * The function uses the Spatie Roles and Permissions package for role checking.
-     * It also utilizes Laravel's Eloquent polymorphic relationships for efficient querying.
-     *
-     * @return \Inertia\Response
-     */
-    public function index()
-    {
-        $user = auth()->user();
+//     public function index()
+// {
+//     $user = auth()->user();
+//     if ($user->hasRole(['Super Admin', 'Admin'])) {
+//         $projects = Project::with(['createdBy', 'groups'])->get();
+//     } elseif ($user->hasRole(['Manager', 'Executive'])) {
+//         $projects = Project::with(['createdBy', 'groups'])
+//             ->where(function ($query) use ($user) {
+//                 $query->whereHas('users', function ($q) use ($user) {
+//                     $q->where('project_assignments.assignable_id', $user->id)
+//                         ->where('project_assignments.assignable_type', User::class);
+//                 })
+//                 ->orWhereHas('teams', function ($q) use ($user) {
+//                     $q->whereHas('users', function ($u) use ($user) {
+//                         $u->where('users.id', $user->id);
+//                     });
+//                 });
+//             })
+//             ->get();
+//     } else {
+//         $projects = collect();
+//     }
+//     return Inertia::render('Projects/Index', [
+//         'projects' => $projects,
+//     ]);
+// }
 
-        if ($user->hasRole(['Super Admin', 'Admin'])) {
-            // Super Admin and Admin can see all projects
-            $projects = Project::with('createdBy')->get();
-        } elseif ($user->hasRole(['Manager', 'Executive'])) {
-            // Manager and Executive can see projects they are assigned to directly or through their team
-            $projects = Project::with('createdBy')
-                ->where(function ($query) use ($user) {
-                    $query->whereHas('users', function ($q) use ($user) {
-                        $q->where('project_assignments.assignable_id', $user->id)
-                            ->where('project_assignments.assignable_type', User::class);
-                    })
-                        ->orWhereHas('teams', function ($q) use ($user) {
-                            $q->whereHas('users', function ($u) use ($user) {
-                                $u->where('users.id', $user->id);
-                            });
-                        });
-                })
-                ->get();
-        } else {
-            // Other roles see an empty list
-            $projects = collect();
-        }
 
-        return Inertia::render('Projects/Index', [
-            'projects' => $projects,
-        ]);
+public function index(Request $request)
+{
+    $user = auth()->user();
+    $country = $request->input('country'); // Get selected country from request
+
+    // Base query to get projects with relations
+    $query = Project::with(['createdBy', 'groups']);
+
+    // Apply the country filter if it's provided
+    if ($country) {
+        $query->where('contract_holder_country', $country);
     }
+
+    // Filter based on user roles
+    if ($user->hasRole(['Super Admin', 'Admin'])) {
+        $projects = $query->get();
+    } elseif ($user->hasRole(['Manager', 'Executive'])) {
+        $projects = $query->where(function ($query) use ($user) {
+            $query->whereHas('users', function ($q) use ($user) {
+                $q->where('project_assignments.assignable_id', $user->id)
+                    ->where('project_assignments.assignable_type', User::class);
+            })->orWhereHas('teams', function ($q) use ($user) {
+                $q->whereHas('users', function ($u) use ($user) {
+                    $u->where('users.id', $user->id);
+                });
+            });
+        })->get();
+    } else {
+        $projects = collect();
+    }
+
+    return Inertia::render('Projects/Index', [
+        'projects' => $projects,
+    ]);
+}
+
+
 
     public function create()
     {
         return Inertia::render('Projects/Create');
     }
-
     public function store(StoreProjectRequest $request)
     {
+        $validated = $request->validate([
+            'phase' => 'integer|min:1|max:4',
+        ]);
         $validatedData = $request->validated();
-
         $project = Project::make($request->validated());
         $project->created_by = auth()->id();
         $project->save();
@@ -75,7 +95,6 @@ class ProjectController extends Controller
     }
         return redirect()->route('projects.index')->with('success', 'Project created successfully.');
     }
-
     public function show(Project $project)
     {
         $this->authorize('view', $project);
@@ -85,17 +104,19 @@ class ProjectController extends Controller
             'teams' => Team::all(),
         ]);
     }
-
     public function edit(Project $project)
     {
-        //
     }
-
     public function update(UpdateProjectRequest $request, Project $project)
     {
-        //
-    }
-
+   $this->authorize('update', $project);
+   $validatedData = $request->validated();
+    $project->update($validatedData);
+    return response()->json([
+        'message' => 'Project updated successfully',
+        'project' => $project
+    ]);
+        }
     public function destroy(Project $project)
     {
         $project->delete();
@@ -110,4 +131,7 @@ class ProjectController extends Controller
     {
         dd($request->all());
     }
-}
+    }
+
+
+

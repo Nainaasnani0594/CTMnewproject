@@ -1,7 +1,5 @@
 <?php
-
 namespace App\Filament\Resources;
-
 use App\Filament\Resources\OverviewResource\Pages;
 use App\Filament\Resources\OverviewResource\RelationManagers;
 use App\Models\Overview;
@@ -89,3 +87,4 @@ class OverviewResource extends Resource
         ];
     }
 }
+//app>Filament>Resources>overviewResource.php

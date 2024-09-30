@@ -29,7 +29,6 @@ const props = defineProps({
         required: false,
         default: null,
     },
-
 });
 const emit = defineEmits(['update:modelValue']);
 const internalValue = computed({
@@ -37,7 +36,6 @@ get() {
         return props.modelValue;
     },
     set(value) {
-        // Remove non-numeric characters and enforce maxLength
         if (props._type === 'number') {
             value = value.replace(/[^0-9]/g, '');
             if (props.maxLength && value.length > props.maxLength) {
@@ -50,7 +48,6 @@ get() {
     }
 });
 </script>
-
 <template>
     <label :for="_id" class="form-control w-full max-w-xs">
         <div class="label">
@@ -66,8 +63,7 @@ get() {
             class="input input-bordered input-primary w-full max-w-xs"
             :class="{
                 'input-error': error,
-            }"
-        />
+            }"/>
         <div class="label">
             <span v-if="error" class="label-text-alt text-error">{{
                 error

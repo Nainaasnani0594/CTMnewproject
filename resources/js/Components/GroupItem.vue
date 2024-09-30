@@ -25,7 +25,6 @@ const props = defineProps({
         required: true,
     },
 });
-
 const tasks = ref(props.group.tasks);
 watch(
     () => props.group.tasks,
@@ -34,7 +33,6 @@ watch(
     }
 );
 </script>
-
 <template>
     <tr>
         <th>
@@ -46,9 +44,8 @@ watch(
         :tasks="tasks"
         :locks="locks"
         :min="min"
-        :max="max"
-    />
-    <tr>
+        :max="max"/>
+    <!-- <tr>
         <th colspan="6">{{ group.name }} Total</th>
         <th>
             {{
@@ -57,5 +54,5 @@ watch(
                 )
             }}
         </th>
-    </tr>
+    </tr> -->
 </template>

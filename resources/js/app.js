@@ -6,6 +6,7 @@ import { createInertiaApp } from '@inertiajs/vue3';
 import { resolvePageComponent } from 'laravel-vite-plugin/inertia-helpers';
 import { ZiggyVue } from '../../vendor/tightenco/ziggy';
 import 'vue-multiselect/dist/vue-multiselect.css';
+console.log('Ziggy routes:', Ziggy);
 
 const appName = import.meta.env.VITE_APP_NAME || 'Laravel';
 

@@ -1,12 +1,9 @@
 <?php
-
 namespace App\Http\Controllers;
-
 use App\Models\Project;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Maatwebsite\Excel\Facades\Excel;
-
 class ProjectExportController extends Controller
 {
     function isLocked($date, $locks)
@@ -16,22 +13,16 @@ class ProjectExportController extends Controller
         });
         return $lockEntry ? $lockEntry['is_locked'] : false;
     }
-
     function sumActual($activities, $locks)
     {
         return $activities->sum(function ($activity) use ($locks) {
             return $this->isLocked($activity['date'], $locks) ? $activity['value'] : 0;
         });
     }
-
     function sumTotal($activities)
     {
         return $activities->sum('value');
     }
-
-
-
-
     public function __invoke(Request $request, Project $project)
     {
         $data = [];

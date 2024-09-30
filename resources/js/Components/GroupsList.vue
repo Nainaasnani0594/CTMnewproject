@@ -28,10 +28,9 @@ const fetchLocks = () => {
     });
 };
 const handleLockChange = (lock, index) => {
-
-    const confirmChange = window.confirm("Are you sure you want to change the status?");
-    if (confirmChange) {
-        const options = {
+    const confirm = window.confirm("Are you sure you want to change the status?");
+    if (confirm) {
+    const options = {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
         url: route("locks.update", lock.id),
@@ -43,7 +42,6 @@ const handleLockChange = (lock, index) => {
         .request(options)
         .then((response) => {
             console.log(response.data);
-            fetchLocks();
         })
         .catch((error) => {
             console.error(error);
@@ -53,9 +51,39 @@ const handleLockChange = (lock, index) => {
     }
 };
 fetchLocks();
+// Compute totals for units, price, and overall total
+const computeTotals = (groups, months) => {
+    let totalUnits = 0;
+    let totalPrice = 0;
+    let totalValue = 0;
+    let monthlyTotals = {};
+    // Array(months.length).fill(0); 
+    months.forEach(month => {
+        monthlyTotals[dayjs(month).format("MM YY")] = 0; 
+    });
+    groups.forEach(group => {
+        group.tasks.forEach(task => {
+            // totalUnits += task.quantity;
+            totalPrice += task.price;
+            totalValue += task.quantity * task.price;
+
+            task.activities.forEach(activity => {
+                const activityDate = dayjs(activity.date);
+                const monthKey = activityDate.format("MMMM YYYY"); 
+                if (monthlyTotals.hasOwnProperty(monthKey)) {
+                    monthlyTotals[monthKey] += activity.value; 
+                }
+            });
+        });
+    });
+
+    return { totalUnits, totalPrice, totalValue, monthlyTotals };
+};
+
+const totals = computeTotals(props.project.groups, props.project.months);
+
 
 </script>
-
 <template>
     <div class="overflow-x-auto">
         <table class="table table-pin-rows table-pin-cols">
@@ -69,7 +97,8 @@ fetchLocks();
                     <th
                         class="p-0"
                         v-for="month in project.months"
-                        :key="month">
+                        :key="month"
+                    >
                         {{ dayjs(month).format("MMM-YY") }}
                     </th>
                     <th>Units Done</th>
@@ -117,7 +146,25 @@ fetchLocks();
                             .add(project.clinical_duration, 'month')
                             .subtract(1, 'day')
                             .format('YYYY-MM-DD')"/>
+                    <tr>
+                    <th colspan="2">Total</th>
+                    <th></th>
+                    <th>{{ totals.totalPrice }}</th>
+                    <th>{{ totals.totalValue }}</th>
+                    <th></th>
+                    <!-- <th v-for="(monthTotal, index) in totals.monthlyTotals" :key="index">
+                        {{ monthTotal.toFixed(0) }} 
+                    </th> -->
+                    <th></th>
+                    <th></th>
+                    <th></th>
+                </tr>
+
             </tbody>
         </table>
     </div>
 </template>
+
+
+
+
